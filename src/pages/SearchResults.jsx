@@ -5,11 +5,13 @@ import { useFetchMovies } from '../hooks/useFetchMovies';
 import MovieList from '../components/MovieList';
 import Filters from '../components/Filters';
 import Pagination from '../components/Pagination';
-import { SearchX } from 'lucide-react';
+import { SearchX, Search as SearchIcon } from 'lucide-react';
 import { TextGenerateEffect } from '../components/ui/TextGenerateEffect';
 import { Sparkles } from '../components/ui/Sparkles';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function SearchResults() {
+    const { t } = useLanguage();
     const [searchParams, setSearchParams] = useSearchParams();
     const query = searchParams.get('q') || '';
     const initialType = searchParams.get('type') || '';
@@ -52,10 +54,17 @@ export default function SearchResults() {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
+                className="flex items-center space-x-3 mb-6"
             >
+                <motion.div
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+                >
+                    <SearchIcon className="text-primary-600 dark:text-primary-400" size={32} />
+                </motion.div>
                 <TextGenerateEffect 
-                    words={`Resultados para "${query}"`}
-                    className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-6"
+                    words={`${t('resultsFor')} "${query}"`}
+                    className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white"
                     duration={0.15}
                 />
             </motion.div>
