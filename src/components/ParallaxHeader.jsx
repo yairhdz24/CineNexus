@@ -26,7 +26,7 @@ export default function ParallaxHeader({ title, subtitle, image }) {
             ref={headerRef}
             className="relative h-[50vh] md:h-[70vh] min-h-[400px] flex items-center justify-center overflow-hidden"
         >
-            {/* Background Image with Parallax */}
+            {/* Imagen de fondo con efecto parallax */}
             <div
                 className="absolute inset-0 z-0"
                 style={{
@@ -38,22 +38,22 @@ export default function ParallaxHeader({ title, subtitle, image }) {
                 }}
             />
             
-            {/* Gradient Overlay */}
+            {/* Overlay con gradiente */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/80 z-10" />
             
-            {/* Background Effects */}
+            {/* Efectos de fondo */}
             <BackgroundBeams className="z-10" />
             <Sparkles id="header-sparkles" className="z-10" sparklesCount={30} />
             <div className="absolute inset-0 z-10 overflow-hidden">
                 <Meteors number={15} />
             </div>
             
-            {/* Spotlight Effect */}
+            {/* Efecto Spotlight */}
             <div className="absolute inset-0 z-10 flex items-center justify-center">
                 <Spotlight className="-top-40 left-0 md:left-60 md:-top-20 opacity-30" fill="white" />
             </div>
 
-            {/* Content */}
+            {/* Contenido */}
             <div className="relative z-20 text-center px-4 w-full max-w-6xl mx-auto">
                 <div className="animate-slide-up">
                     <TextGenerateEffect 

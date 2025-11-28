@@ -3,12 +3,14 @@ import { motion, useScroll, useTransform } from 'motion/react';
 import ParallaxHeader from '../components/ParallaxHeader';
 import MovieList from '../components/MovieList';
 import { fetchMovies } from '../utils/api';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, TrendingUp, Tv } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AuroraBackground } from '../components/ui/AuroraBackground';
 import { TextGenerateEffect } from '../components/ui/TextGenerateEffect';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Home() {
+    const { t } = useLanguage();
     const [trending, setTrending] = useState([]);
     const [series, setSeries] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -43,17 +45,13 @@ export default function Home() {
 
     return (
         <div ref={containerRef} className="min-h-screen pb-20 md:pb-0 relative overflow-hidden">
-            {/* Aurora Background for sections */}
-            <div className="absolute inset-0 -z-10">
-                <AuroraBackground showRadialGradient={true}>
-                    <div className="absolute inset-0 bg-white/50 dark:bg-slate-900/50" />
-                </AuroraBackground>
-            </div>
+            {/* Fondo sutil para secciones */}
+            <div className="absolute inset-0 -z-10 bg-gradient-to-br from-slate-50/80 via-white/60 to-slate-50/80 dark:from-slate-900/80 dark:via-slate-900/60 dark:to-slate-900/80" />
 
             <motion.div style={{ opacity, scale }}>
                 <ParallaxHeader
-                    title="Bienvenido a Cine Nexus"
-                    subtitle="Descubre millones de películas, series y personas. Explora ahora."
+                    title={t('welcome')}
+                    subtitle={t('subtitle')}
                 />
             </motion.div>
 
@@ -67,9 +65,14 @@ export default function Home() {
                 >
                     <div className="flex justify-between items-center mb-8">
                         <div className="flex items-center space-x-4">
-                            <span className="w-1 h-12 bg-gradient-to-b from-primary-500 to-purple-500 rounded-full"></span>
+                            <motion.div
+                                whileHover={{ scale: 1.1, rotate: 5 }}
+                                className="p-2 rounded-lg bg-gradient-to-br from-primary-500/20 to-purple-500/20"
+                            >
+                                <TrendingUp className="text-primary-600 dark:text-primary-400" size={24} />
+                            </motion.div>
                             <TextGenerateEffect 
-                                words="Películas en Tendencia"
+                                words={t('trending')}
                                 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white"
                                 duration={0.2}
                             />
@@ -78,7 +81,7 @@ export default function Home() {
                             to="/search?q=marvel" 
                             className="btn-secondary flex items-center group hover:scale-105 transition-transform"
                         >
-                            Ver Todo <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                            {t('seeAll')} <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </div>
                     <MovieList movies={trending} loading={loading} />
@@ -93,9 +96,14 @@ export default function Home() {
                 >
                     <div className="flex justify-between items-center mb-8">
                         <div className="flex items-center space-x-4">
-                            <span className="w-1 h-12 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full"></span>
+                            <motion.div
+                                whileHover={{ scale: 1.1, rotate: 5 }}
+                                className="p-2 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20"
+                            >
+                                <Tv className="text-purple-600 dark:text-purple-400" size={24} />
+                            </motion.div>
                             <TextGenerateEffect 
-                                words="Series Populares"
+                                words={t('popularSeries')}
                                 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white"
                                 duration={0.2}
                             />
@@ -104,7 +112,7 @@ export default function Home() {
                             to="/search?q=star wars&type=series" 
                             className="btn-secondary flex items-center group hover:scale-105 transition-transform"
                         >
-                            Ver Todo <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                            {t('seeAll')} <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </div>
                     <MovieList movies={series} loading={loading} />

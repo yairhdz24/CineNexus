@@ -12,7 +12,7 @@
     }
     
     body {
-        @apply bg-white dark:bg-dark-bg text-slate-900 dark:text-dark-text transition-colors duration-300 antialiased;
+        @apply bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:bg-dark-bg text-slate-900 dark:text-dark-text transition-colors duration-300 antialiased;
     }
 }
 
@@ -122,4 +122,14 @@
 
 .stagger-enter:nth-child(5) {
     animation-delay: 0.5s;
+}
+
+/* Animacion de fondo de cine */
+@keyframes slideHorizontal {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
 }
