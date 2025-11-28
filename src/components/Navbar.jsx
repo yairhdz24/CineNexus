@@ -1,16 +1,20 @@
 import { Link, NavLink } from 'react-router-dom';
-import { Film, Heart } from 'lucide-react';
+import { Film, Heart, Home, Search } from 'lucide-react';
 import { motion } from 'motion/react';
 import { ToggleTheme } from './ToggleTheme';
 import SearchBar from './SearchBar';
+import LanguageToggle from './LanguageToggle';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Navbar() {
+    const { t } = useLanguage();
+    
     return (
         <motion.header 
             initial={{ y: -100 }}
             animate={{ y: 0 }}
             transition={{ duration: 0.5 }}
-            className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 transition-colors duration-300 shadow-sm"
+            className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 transition-colors duration-300 shadow-md"
         >
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                 <motion.div
@@ -34,13 +38,14 @@ export default function Navbar() {
                         <NavLink
                             to="/"
                             className={({ isActive }) =>
-                                `font-medium transition-all duration-300 hover:text-primary-500 relative ${isActive ? 'text-primary-600 dark:text-primary-400' : 'text-slate-600 dark:text-slate-300'
+                                `font-medium transition-all duration-300 hover:text-primary-500 relative flex items-center space-x-1.5 ${isActive ? 'text-primary-600 dark:text-primary-400' : 'text-slate-600 dark:text-slate-300'
                                 }`
                             }
                         >
                             {({ isActive }) => (
                                 <>
-                                    Inicio
+                                    <Home size={18} className={isActive ? "text-primary-600 dark:text-primary-400" : ""} />
+                                    <span>{t('home')}</span>
                                     {isActive && (
                                         <motion.div
                                             layoutId="navbar-indicator"
@@ -55,14 +60,14 @@ export default function Navbar() {
                         <NavLink
                             to="/favorites"
                             className={({ isActive }) =>
-                                `font-medium transition-all duration-300 hover:text-primary-500 flex items-center space-x-1 relative ${isActive ? 'text-primary-600 dark:text-primary-400' : 'text-slate-600 dark:text-slate-300'
+                                `font-medium transition-all duration-300 hover:text-primary-500 flex items-center space-x-1.5 relative ${isActive ? 'text-primary-600 dark:text-primary-400' : 'text-slate-600 dark:text-slate-300'
                                 }`
                             }
                         >
                             {({ isActive }) => (
                                 <>
-                                    <Heart size={18} className={isActive ? "fill-current" : ""} />
-                                    <span>Favoritos</span>
+                                    <Heart size={18} className={isActive ? "fill-current text-primary-600 dark:text-primary-400" : ""} />
+                                    <span>{t('favorites')}</span>
                                     {isActive && (
                                         <motion.div
                                             layoutId="navbar-indicator"
@@ -75,7 +80,10 @@ export default function Navbar() {
                             )}
                         </NavLink>
                     </nav>
-                    <ToggleTheme />
+                    <div className="flex items-center space-x-2">
+                        <LanguageToggle />
+                        <ToggleTheme />
+                    </div>
                 </div>
             </div>
         </motion.header>

@@ -9,15 +9,19 @@ import Favorites from './pages/Favorites';
 import NotFound from './pages/NotFound';
 import { BackgroundBeams } from './components/ui/BackgroundBeams';
 import { Sparkles } from './components/ui/Sparkles';
+import { CinemaBackground } from './components/ui/CinemaBackground';
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-white dark:bg-dark-bg transition-colors duration-300 font-sans relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:bg-dark-bg transition-colors duration-300 font-sans relative overflow-hidden">
+        {/* Fondo de iconos de cine */}
+        <CinemaBackground className="fixed inset-0 -z-20" />
+        
         {/* Global Background Effects */}
         <div className="fixed inset-0 -z-10 pointer-events-none">
-          <BackgroundBeams className="opacity-30" />
-          <Sparkles id="global-sparkles" sparklesCount={15} className="opacity-50" />
+          <BackgroundBeams className="opacity-20 dark:opacity-30" />
+          <Sparkles id="global-sparkles" sparklesCount={15} className="opacity-30 dark:opacity-50" />
         </div>
 
         <Navbar />

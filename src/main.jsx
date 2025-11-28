@@ -4,13 +4,16 @@ import './styles/globals.css'
 import App from './App.jsx'
 import { ThemeProvider } from './context/ThemeContext'
 import { FavoritesProvider } from './context/FavoritesContext'
+import { LanguageProvider } from './context/LanguageContext'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>
-      <FavoritesProvider>
-        <App />
-      </FavoritesProvider>
+      <LanguageProvider>
+        <FavoritesProvider>
+          <App />
+        </FavoritesProvider>
+      </LanguageProvider>
     </ThemeProvider>
   </StrictMode>,
 )
