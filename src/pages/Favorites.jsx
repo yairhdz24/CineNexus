@@ -1,12 +1,14 @@
 import { useFavorites } from '../context/FavoritesContext';
 import { motion } from 'motion/react';
 import MovieList from '../components/MovieList';
-import { Heart } from 'lucide-react';
+import { Heart, HeartOff } from 'lucide-react';
 import { TextGenerateEffect } from '../components/ui/TextGenerateEffect';
 import { Sparkles } from '../components/ui/Sparkles';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Favorites() {
     const { favorites } = useFavorites();
+    const { t } = useLanguage();
 
     return (
         <div className="container mx-auto px-4 py-8 min-h-screen pb-20 relative">
@@ -27,7 +29,7 @@ export default function Favorites() {
                     <Heart className="text-red-500" size={32} fill="currentColor" />
                 </motion.div>
                 <TextGenerateEffect 
-                    words="Tus Favoritos"
+                    words={t('yourFavorites')}
                     className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white"
                     duration={0.15}
                 />
@@ -44,10 +46,10 @@ export default function Favorites() {
                         animate={{ scale: [1, 1.1, 1] }}
                         transition={{ duration: 2, repeat: Infinity }}
                     >
-                        <Heart size={48} className="mx-auto text-slate-300 dark:text-slate-600 mb-4" />
+                        <HeartOff size={48} className="mx-auto text-slate-300 dark:text-slate-600 mb-4" />
                     </motion.div>
-                    <p className="text-xl text-slate-600 dark:text-slate-400">Aún no tienes favoritos.</p>
-                    <p className="text-slate-500 dark:text-slate-500 mt-2">¡Comienza a agregar películas para construir tu colección!</p>
+                    <p className="text-xl text-slate-600 dark:text-slate-400">{t('noFavorites')}</p>
+                    <p className="text-slate-500 dark:text-slate-500 mt-2">{t('startAdding')}</p>
                 </motion.div>
             ) : (
                 <motion.div
