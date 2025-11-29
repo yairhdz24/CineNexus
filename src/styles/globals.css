@@ -24,6 +24,13 @@
     .btn-secondary {
         @apply px-6 py-3 rounded-xl font-bold text-slate-700 dark:text-white bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 active:scale-95;
     }
+
+    /* Texto degradado animado para el hero de Cine Nexus */
+    .text-hero-gradient {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-400 via-sky-400 to-purple-500;
+        background-size: 200% 200%;
+        animation: hero-gradient-move 6s ease-in-out infinite;
+    }
 }
 
 /* Custom Scrollbar */
@@ -74,6 +81,19 @@
 
     50% {
         box-shadow: 0 0 20px rgba(14, 165, 233, 0.8);
+    }
+}
+
+/* Animacion de degradado para el texto del hero */
+@keyframes hero-gradient-move {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
     }
 }
 

@@ -2,20 +2,26 @@ import { useFavorites } from '../context/FavoritesContext';
 import { motion } from 'motion/react';
 import MovieList from '../components/MovieList';
 import { Heart, HeartOff } from 'lucide-react';
-import { TextGenerateEffect } from '../components/ui/TextGenerateEffect';
-import { Sparkles } from '../components/ui/Sparkles';
 import { useLanguage } from '../context/LanguageContext';
+import { useMemo } from 'react';
 
 export default function Favorites() {
     const { favorites } = useFavorites();
     const { t } = useLanguage();
 
-    return (
-        <div className="container mx-auto px-4 py-8 min-h-screen pb-20 relative">
-            <div className="absolute inset-0 -z-10 overflow-hidden">
-                <Sparkles id="favorites-sparkles" sparklesCount={25} className="opacity-30" />
-            </div>
+    // Filtrar favoritos duplicados y validar que tengan imdbID
+    const validFavorites = useMemo(() => {
+        const seen = new Set();
+        return favorites.filter(movie => {
+            if (!movie || !movie.imdbID) return false;
+            if (seen.has(movie.imdbID)) return false;
+            seen.add(movie.imdbID);
+            return true;
+        });
+    }, [favorites]);
 
+    return (
+        <div className="container mx-auto px-4 py-8 min-h-screen pb-20 relative bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-black">
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -28,14 +34,12 @@ export default function Favorites() {
                 >
                     <Heart className="text-red-500" size={32} fill="currentColor" />
                 </motion.div>
-                <TextGenerateEffect 
-                    words={t('yourFavorites')}
-                    className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white"
-                    duration={0.15}
-                />
+                <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
+                    {t('yourFavorites')}
+                </h1>
             </motion.div>
 
-            {favorites.length === 0 ? (
+            {validFavorites.length === 0 ? (
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -57,7 +61,7 @@ export default function Favorites() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                    <MovieList movies={favorites} />
+                    <MovieList movies={validFavorites} />
                 </motion.div>
             )}
         </div>

@@ -13,9 +13,15 @@ export function FavoritesProvider({ children }) {
     }, [favorites]);
 
     const addFavorite = (movie) => {
+        if (!movie || !movie.imdbID) {
+            console.error('Intento de agregar favorito invalido:', movie);
+            return;
+        }
         setFavorites((prev) => {
-            if (prev.some((fav) => fav.imdbID === movie.imdbID)) return prev;
-            return [...prev, movie];
+            // Filtrar favoritos invalidos y duplicados
+            const valid = prev.filter(fav => fav && fav.imdbID);
+            if (valid.some((fav) => fav.imdbID === movie.imdbID)) return valid;
+            return [...valid, movie];
         });
     };
 
