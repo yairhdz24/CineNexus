@@ -6,12 +6,12 @@ import { flushSync } from "react-dom"
 
 import { cn } from "../lib/utils"
 
-export const ToggleTheme = ({
+export default function ToggleTheme({
     className,
     duration = 400,
     animationType = "circle-spread",
     ...props
-}) => {
+}) {
     const [isDark, setIsDark] = useState(false)
     const buttonRef = useRef(null)
 
