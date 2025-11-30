@@ -1,65 +1,93 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 
-const FavoritesContext = createContext();
+const FavoritesContext = createContext(null);
 
 /**
  * Proveedor de contexto para gestionar las películas favoritas
- * Almacena los favoritos en localStorage para persistencia
  */
 export function FavoritesProvider({ children }) {
-    const [favorites, setFavorites] = useState(() => {
-        const saved = localStorage.getItem('favorites');
-        return saved ? JSON.parse(saved) : [];
-    });
+    const [favorites, setFavorites] = useState([]);
 
-    /**
-     * Sincroniza los favoritos con localStorage cada vez que cambian
-     */
+    // Cargar favoritos de localStorage al iniciar
     useEffect(() => {
-        localStorage.setItem('favorites', JSON.stringify(favorites));
+        try {
+            const saved = localStorage.getItem('cine-nexus-favorites');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed)) {
+                    setFavorites(parsed);
+                }
+            }
+        } catch (error) {
+            console.error('Error loading favorites:', error);
+        }
+    }, []);
+
+    // Guardar favoritos en localStorage cuando cambian
+    useEffect(() => {
+        try {
+            localStorage.setItem('cine-nexus-favorites', JSON.stringify(favorites));
+        } catch (error) {
+            console.error('Error saving favorites:', error);
+        }
     }, [favorites]);
 
-    /**
-     * Agrega una película a favoritos si no está ya agregada
-     * @param {Object} movie - Objeto de la película a agregar
-     */
     const addFavorite = (movie) => {
-        setFavorites((prev) => {
-            if (prev.some((fav) => fav.imdbID === movie.imdbID)) {
+        if (!movie || !movie.imdbID) return;
+        
+        setFavorites(prev => {
+            // Verificar si ya existe
+            if (prev.some(fav => fav.imdbID === movie.imdbID)) {
                 return prev;
             }
-            return [...prev, movie];
+            // Agregar nuevo favorito
+            return [...prev, {
+                imdbID: movie.imdbID,
+                Title: movie.Title || 'Sin título',
+                Year: movie.Year || '',
+                Poster: movie.Poster || 'N/A',
+                Type: movie.Type || 'movie'
+            }];
         });
     };
 
-    /**
-     * Elimina una película de favoritos por su ID de IMDb
-     * @param {string} imdbID - ID de IMDb de la película a eliminar
-     */
     const removeFavorite = (imdbID) => {
-        setFavorites((prev) => prev.filter((movie) => movie.imdbID !== imdbID));
+        if (!imdbID) return;
+        setFavorites(prev => prev.filter(movie => movie.imdbID !== imdbID));
     };
 
-    /**
-     * Verifica si una película está en favoritos
-     * @param {string} imdbID - ID de IMDb de la película a verificar
-     * @returns {boolean} true si la película está en favoritos, false en caso contrario
-     */
     const isFavorite = (imdbID) => {
-        return favorites.some((movie) => movie.imdbID === imdbID);
+        if (!imdbID) return false;
+        return favorites.some(movie => movie.imdbID === imdbID);
+    };
+
+    const toggleFavorite = (movie) => {
+        if (!movie || !movie.imdbID) return;
+        
+        if (isFavorite(movie.imdbID)) {
+            removeFavorite(movie.imdbID);
+        } else {
+            addFavorite(movie);
+        }
     };
 
     return (
-        <FavoritesContext.Provider value={{ favorites, addFavorite, removeFavorite, isFavorite }}>
+        <FavoritesContext.Provider value={{ 
+            favorites, 
+            addFavorite, 
+            removeFavorite, 
+            isFavorite,
+            toggleFavorite 
+        }}>
             {children}
         </FavoritesContext.Provider>
     );
 }
 
-/**
- * Hook para acceder al contexto de favoritos
- * @returns {Object} Objeto con la lista de favoritos y funciones para gestionarlos
- */
 export function useFavorites() {
-    return useContext(FavoritesContext);
+    const context = useContext(FavoritesContext);
+    if (!context) {
+        throw new Error('useFavorites must be used within FavoritesProvider');
+    }
+    return context;
 }
