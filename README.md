@@ -1,87 +1,383 @@
-# MovieStream - Premium Movie Search App
+# Cine Nexus - Aplicación de Búsqueda de Películas
 
-A modern, visually stunning Single Page Application (SPA) for searching movies and series, built with React, TailwindCSS, and the OMDb API.
+Una aplicación moderna y visualmente atractiva para buscar películas y series, construida con React, TailwindCSS y la API de OMDb.
 
-## 🚀 Features
+## 📋 Tabla de Contenidos
 
--   **Premium UI/UX**: Inspired by Netflix/Disney+, featuring dark mode, glassmorphism, and fluid animations.
--   **Smart Search**: Real-time search with debounce, caching, and advanced filters (Type, Year).
--   **Responsive Design**: Mobile-first approach with a bottom navigation bar for mobile devices.
--   **Favorites System**: Persist your favorite movies locally.
--   **Performance**: Optimized with local storage caching to minimize API calls and lazy loading for images.
--   **Interactive Elements**: 3D hover effects, parallax headers, and smooth page transitions.
+- [Características](#-características)
+- [Tecnologías Utilizadas](#-tecnologías-utilizadas)
+- [Requisitos Previos](#-requisitos-previos)
+- [Instalación](#-instalación)
+- [Configuración de la API](#-configuración-de-la-api)
+- [Configuración de Variables de Entorno](#-configuración-de-variables-de-entorno)
+- [Instalación de Librerías](#-instalación-de-librerías)
+- [Ejecución del Proyecto](#-ejecución-del-proyecto)
+- [Estructura del Proyecto](#-estructura-del-proyecto)
+- [Scripts Disponibles](#-scripts-disponibles)
+- [Poner Imágenes y Demás](#-poner-imágenes-y-demás)
 
-## 🛠️ Tech Stack
+## ✨ Características
 
--   **Framework**: React 18 + Vite
--   **Styling**: TailwindCSS v3 + Custom CSS Animations
--   **Icons**: Lucide React
--   **Routing**: React Router DOM v6
--   **State Management**: React Context API (Theme, Favorites)
--   **API**: OMDb API
+- **Interfaz Premium**: Diseño inspirado en Netflix/Disney+, con modo oscuro, glassmorphism y animaciones fluidas
+- **Búsqueda Inteligente**: Búsqueda en tiempo real con debounce, caché y filtros avanzados (Tipo, Año)
+- **Diseño Responsive**: Enfoque mobile-first con barra de navegación inferior para dispositivos móviles
+- **Sistema de Favoritos**: Guarda tus películas favoritas localmente
+- **Rendimiento Optimizado**: Optimizado con caché en localStorage para minimizar llamadas a la API y carga diferida de imágenes
+- **Elementos Interactivos**: Efectos 3D al pasar el mouse, headers con parallax y transiciones suaves entre páginas
+- **Tema Claro/Oscuro**: Cambio de tema con persistencia en localStorage y sombras mejoradas en modo claro
+- **Detalles Completos**: Página de detalles con información completa de cada película o serie, bien estructurada e indentada
+- **Reproductor de Tráilers**: Reproduce tráilers de YouTube directamente en la página (requiere API key opcional)
+- **Multiidioma**: Soporte para español e inglés con cambio de idioma en tiempo real
+- **Tarjetas Mejoradas**: Tarjetas de películas con efectos 3D mejorados, más inclinadas y con mejor diseño
 
-## 📦 Installation & Setup
+## 🛠️ Tecnologías Utilizadas
 
-1.  **Clone the repository**
+- **Framework**: React 19 + Vite 7
+- **Estilos**: TailwindCSS v3 + Animaciones CSS personalizadas
+- **Iconos**: Lucide React
+- **Enrutamiento**: React Router DOM v7
+- **Gestión de Estado**: React Context API (Theme, Favorites, Language)
+- **Animaciones**: Motion (Framer Motion)
+- **API**: OMDb API
+- **Utilidades**: clsx, tailwind-merge
+
+## 📦 Requisitos Previos
+
+Antes de comenzar, asegúrate de tener instalado:
+
+- **Node.js** (versión 18 o superior)
+- **npm** (viene incluido con Node.js) o **yarn**
+- Una cuenta en [OMDb API](http://www.omdbapi.com/apikey.aspx) para obtener tu clave de API
+
+## 🚀 Instalación
+
+### 1. Clonar el Repositorio
+
     ```bash
-    git clone <repository-url>
+git clone <url-del-repositorio>
     cd movie-search-app
     ```
 
-2.  **Install dependencies**
+### 2. Instalar Dependencias
+
     ```bash
     npm install
     ```
 
-3.  **Configure Environment Variables**
-    Create a `.env` file in the root directory (or rename `.env.example`):
-    ```env
-    VITE_OMDB_API_KEY=38a89049
-    VITE_OMDB_BASE_URL=https://www.omdbapi.com/
-    ```
+O si prefieres usar yarn:
 
-4.  **Run the development server**
+```bash
+yarn install
+```
+
+## 🔑 Configuración de la API
+
+### Obtener Clave de API de OMDb
+
+1. Visita [OMDb API](http://www.omdbapi.com/apikey.aspx)
+2. Selecciona el tipo de plan que necesitas:
+   - **Plan Gratuito**: 1,000 solicitudes por día
+   - **Plan Pagado**: Solicitudes ilimitadas
+3. Completa el formulario con tu información
+4. Verifica tu correo electrónico
+5. Copia tu clave de API (tendrá un formato como: `abc12345`)
+
+### Información sobre la API
+
+- **URL Base**: `https://www.omdbapi.com/`
+- **Límite de solicitudes**: Depende de tu plan
+- **Documentación**: [OMDb API Documentation](https://www.omdbapi.com/)
+
+## ⚙️ Configuración de Variables de Entorno
+
+### Crear Archivo .env
+
+En la raíz del proyecto, crea un archivo llamado `.env`:
+
+```bash
+touch .env
+```
+
+O en Windows:
+
+```bash
+type nul > .env
+```
+
+### Configurar Variables
+
+Abre el archivo `.env` y agrega la siguiente configuración:
+
+```env
+VITE_OMDB_API_KEY=tu_clave_de_api_aqui
+VITE_YOUTUBE_API_KEY=tu_clave_de_youtube_api_aqui
+```
+
+**Ejemplo:**
+
+    ```env
+VITE_OMDB_API_KEY=abc12345
+VITE_YOUTUBE_API_KEY=xyz78901
+```
+
+**Nota sobre YouTube API Key:**
+- La clave de YouTube es **opcional** pero recomendada para reproducir tráilers directamente en la página
+- Si no proporcionas una clave de YouTube, la aplicación mostrará un botón para buscar el tráiler en YouTube
+- Para obtener una clave de YouTube:
+  1. Visita [Google Cloud Console](https://console.cloud.google.com/)
+  2. Crea un nuevo proyecto o selecciona uno existente
+  3. Habilita la API de YouTube Data API v3
+  4. Crea credenciales (API Key)
+  5. Copia la clave y agrégala a tu archivo `.env`
+
+### Importante sobre Variables de Entorno en Vite
+
+- Las variables de entorno en Vite deben comenzar con `VITE_` para ser accesibles en el código del cliente
+- No incluyas espacios alrededor del signo `=`
+- No uses comillas a menos que sean parte del valor
+- **NUNCA** subas el archivo `.env` a un repositorio público. Asegúrate de que esté en tu `.gitignore`
+
+### Verificar .gitignore
+
+Asegúrate de que tu archivo `.gitignore` incluya:
+
+```
+.env
+.env.local
+.env.production
+```
+
+## 📚 Instalación de Librerías
+
+El proyecto utiliza las siguientes dependencias principales:
+
+### Dependencias de Producción
+
+```bash
+npm install react react-dom react-router-dom
+npm install motion
+npm install lucide-react
+npm install clsx tailwind-merge
+npm install @radix-ui/react-hover-card
+npm install qss
+```
+
+### Dependencias de Desarrollo
+
+```bash
+npm install -D vite @vitejs/plugin-react
+npm install -D tailwindcss postcss autoprefixer
+npm install -D eslint
+npm install -D @types/react @types/react-dom
+```
+
+### Instalación Completa
+
+Todas las dependencias se instalan automáticamente cuando ejecutas:
+
+```bash
+npm install
+```
+
+## 🏃 Ejecución del Proyecto
+
+### Modo Desarrollo
+
+Para ejecutar el proyecto en modo desarrollo:
+
     ```bash
     npm run dev
     ```
 
-5.  **Build for production**
+El servidor de desarrollo se iniciará en `http://localhost:5173` (o el puerto que Vite asigne automáticamente).
+
+### Modo Producción
+
+Para crear una versión optimizada para producción:
+
     ```bash
     npm run build
     ```
 
-## 📂 Project Structure
+Los archivos compilados se generarán en la carpeta `dist/`.
 
-```
-src/
-├── components/         # Reusable UI components (Navbar, MovieCard, etc.)
-├── context/           # Global state (Theme, Favorites)
-├── hooks/             # Custom hooks (useFetchMovies, useDebounce)
-├── pages/             # Route components (Home, SearchResults, MovieDetail)
-├── styles/            # Global styles and animations
-├── utils/             # Helper functions and API configuration
-└── main.jsx           # Entry point
+### Vista Previa de Producción
+
+Para previsualizar la versión de producción localmente:
+
+```bash
+npm run preview
 ```
 
-## 🎨 Design & Architecture
+### Linting
 
--   **Component-Based**: Modular architecture for maintainability and reusability.
--   **Custom Hooks**: Logic separated from UI (e.g., `useFetchMovies` handles API state and caching).
--   **Context API**: Used for global themes and favorites to avoid prop drilling.
--   **TailwindCSS**: Utility-first styling for rapid development and consistent design system.
--   **Animations**: CSS keyframes and transitions used for performance-friendly visual flair.
+Para verificar el código con ESLint:
 
-## 🧪 Optimizations
+```bash
+npm run lint
+```
 
--   **Debouncing**: Search input is debounced to prevent excessive API requests.
--   **Caching**: API responses are cached in LocalStorage for 5 minutes to improve speed and reduce quota usage.
--   **Lazy Loading**: Images and components are loaded efficiently.
--   **Skeleton Screens**: Loading states provide immediate visual feedback.
+## 📂 Estructura del Proyecto
 
-## 📸 Screenshots
+```
+movie-search-app/
+├── public/                 # Archivos estáticos
+│   └── vite.svg
+├── src/
+│   ├── assets/            # Recursos estáticos (imágenes, etc.)
+│   ├── components/        # Componentes reutilizables
+│   │   ├── ui/           # Componentes de UI (BackgroundBeams, Spotlight, etc.)
+│   │   ├── DarkModeToggle.jsx
+│   │   ├── FavoriteButton.jsx
+│   │   ├── Filters.jsx
+│   │   ├── Footer.jsx
+│   │   ├── MovieCard.jsx
+│   │   ├── MovieCardSkeleton.jsx
+│   │   ├── MovieList.jsx
+│   │   ├── Navbar.jsx
+│   │   ├── Pagination.jsx
+│   │   ├── ParallaxHeader.jsx
+│   │   ├── SearchBar.jsx
+│   │   ├── TabsResponsive.jsx
+│   │   └── ToggleTheme.jsx
+│   ├── context/          # Contextos de React (Theme, Favorites, Language)
+│   │   ├── FavoritesContext.jsx
+│   │   ├── LanguageContext.jsx
+│   │   └── ThemeContext.jsx
+│   ├── hooks/            # Hooks personalizados
+│   │   ├── useDebounce.js
+│   │   ├── useFetchMovies.js
+│   │   └── useLocalStorage.js
+│   ├── lib/              # Utilidades de librerías
+│   │   └── utils.js
+│   ├── pages/            # Componentes de páginas/rutas
+│   │   ├── Favorites.jsx
+│   │   ├── Home.jsx
+│   │   ├── MovieDetail.jsx
+│   │   ├── NotFound.jsx
+│   │   └── SearchResults.jsx
+│   ├── styles/           # Estilos globales
+│   │   └── globals.css
+│   ├── utils/            # Funciones auxiliares
+│   │   ├── api.js        # Configuración y funciones de la API
+│   │   └── formatters.js
+│   ├── App.jsx           # Componente principal de la aplicación
+│   └── main.jsx          # Punto de entrada
+├── .env                  # Variables de entorno (NO subir a git)
+├── .gitignore
+├── eslint.config.js
+├── index.html
+├── package.json
+├── postcss.config.js
+├── tailwind.config.js
+├── vite.config.js
+└── README.md
+```
 
-*(Add screenshots of Home, Search, and Detail pages here)*
+## 📜 Scripts Disponibles
+
+En el archivo `package.json` encontrarás los siguientes scripts:
+
+- `npm run dev`: Inicia el servidor de desarrollo
+- `npm run build`: Construye la aplicación para producción
+- `npm run preview`: Previsualiza la versión de producción
+- `npm run lint`: Ejecuta ESLint para verificar el código
+
+## 📸 Poner Imágenes y Demás
+
+En esta sección puedes agregar capturas de pantalla de tu aplicación para mostrar cómo se ve:
+
+### Capturas de Pantalla Sugeridas
+
+1. **Página de Inicio (Home)**
+   - Muestra el hero section con el título y los posters destacados
+   - Incluye las secciones de "Películas en Tendencia" y "Series Populares"
+
+2. **Página de Búsqueda (Search Results)**
+   - Muestra los resultados de búsqueda con los filtros aplicados
+   - Incluye la paginación en funcionamiento
+
+3. **Página de Detalles (Movie Detail)**
+   - Muestra la información completa de una película
+   - Incluye el poster, sinopsis, reparto, calificaciones, etc.
+
+4. **Página de Favoritos**
+   - Muestra la lista de películas favoritas guardadas
+
+5. **Vista Móvil**
+   - Capturas de cómo se ve la aplicación en dispositivos móviles
+   - Muestra la barra de navegación inferior
+
+### Ejemplo de Cómo Agregar Imágenes
+
+```markdown
+## Capturas de Pantalla
+
+### Página de Inicio
+![Página de Inicio](./screenshots/home.png)
+
+### Página de Búsqueda
+![Página de Búsqueda](./screenshots/search.png)
+
+### Página de Detalles
+![Página de Detalles](./screenshots/detail.png)
+```
+
+### Crear Carpeta de Screenshots
+
+1. Crea una carpeta `screenshots` en la raíz del proyecto
+2. Agrega tus capturas de pantalla allí
+3. Actualiza esta sección del README con las rutas correctas
+
+## 🎨 Personalización
+
+### Colores y Tema
+
+Los colores principales se configuran en `tailwind.config.js`. Puedes personalizar:
+
+- Colores primarios
+- Modo oscuro/claro
+- Animaciones
+- Espaciados
+
+### Componentes
+
+Todos los componentes están en `src/components/` y pueden ser modificados según tus necesidades.
+
+## 🐛 Solución de Problemas
+
+### Error: "VITE_OMDB_API_KEY is not defined"
+
+- Verifica que el archivo `.env` existe en la raíz del proyecto
+- Asegúrate de que la variable comience con `VITE_`
+- Reinicia el servidor de desarrollo después de crear/modificar `.env`
+
+### Error: "Failed to fetch"
+
+- Verifica tu conexión a internet
+- Confirma que tu clave de API es válida
+- Revisa los límites de tu plan de OMDb API
+
+### La aplicación no se ve bien
+
+- Limpia la caché del navegador
+- Ejecuta `npm run build` y luego `npm run preview` para verificar la versión de producción
+
+## 📝 Notas Adicionales
+
+- La API de OMDb tiene límites según tu plan. El plan gratuito permite 1,000 solicitudes por día
+- Los favoritos se guardan en localStorage del navegador
+- El tema (claro/oscuro) también se guarda en localStorage
+- Las imágenes se cargan de forma diferida (lazy loading) para mejorar el rendimiento
+
+## 📄 Licencia
+
+Este proyecto es de código abierto y está disponible bajo la licencia MIT.
+
+## 👨‍💻 Autor
+
+Desarrollado por Yair hernandez para la búsqueda de películas y series.
 
 ---
 
-Generated by Antigravity
+**¡Disfruta explorando películas y series con Cine Nexus!** 🎬
