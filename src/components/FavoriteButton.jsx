@@ -1,86 +1,95 @@
-import { useState } from 'react';
 import { Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useFavorites } from '../context/FavoritesContext';
-import clsx from 'clsx';
+import { useState } from 'react';
 
-export default function FavoriteButton({ movie, className }) {
+/**
+ * Componente de botón para agregar o quitar películas de favoritos
+ * Con animación de corazón y explosión de partículas al hacer clic
+ * @param {Object} movie - Objeto de la película a agregar/quitar de favoritos
+ * @param {string} className - Clases CSS adicionales
+ */
+export default function FavoriteButton({ movie, className = '' }) {
     const { isFavorite, addFavorite, removeFavorite } = useFavorites();
     const favorite = isFavorite(movie.imdbID);
-    const [showParticles, setShowParticles] = useState(false);
+    const [isAnimating, setIsAnimating] = useState(false);
 
+    /**
+     * Maneja el evento de clic para agregar o quitar de favoritos
+     */
     const toggleFavorite = (e) => {
         e.preventDefault();
         e.stopPropagation();
+        
+        if (!favorite) {
+            setIsAnimating(true);
+            setTimeout(() => setIsAnimating(false), 700);
+        }
+        
         if (favorite) {
             removeFavorite(movie.imdbID);
         } else {
             addFavorite(movie);
-            setShowParticles(true);
-            setTimeout(() => setShowParticles(false), 1000);
         }
     };
 
-    // Particulas que salen del corazon
-    const particles = Array.from({ length: 12 }, (_, i) => ({
-        id: i,
-        angle: (i * 360) / 12,
-        delay: i * 0.05,
-    }));
-
     return (
-        <div className="relative">
-            <motion.button
-                onClick={toggleFavorite}
-                className={clsx(
-                    "w-10 h-10 rounded-full transition-all duration-300 transform focus:outline-none flex items-center justify-center",
-                    favorite
-                        ? "bg-red-500 text-white shadow-lg shadow-red-500/50"
-                        : "bg-slate-200/50 dark:bg-slate-700/50 backdrop-blur-sm text-slate-600 dark:text-slate-300 hover:bg-red-500 hover:text-white",
-                    className
-                )}
-                aria-label={favorite ? "Quitar de favoritos" : "Agregar a favoritos"}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+        <motion.button
+            onClick={toggleFavorite}
+            className={`relative p-2.5 rounded-xl transition-all duration-300 focus:outline-none ${
+                favorite
+                    ? 'bg-red-500 text-white shadow-lg shadow-red-500/30'
+                    : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-500'
+            } ${className}`}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.85 }}
+            aria-label={favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+        >
+            {/* Icono del corazón con animación */}
+            <motion.div
+                animate={favorite ? { scale: [1, 1.3, 1] } : {}}
+                transition={{ duration: 0.3 }}
             >
                 <Heart 
                     size={20} 
-                    fill={favorite ? "currentColor" : "none"}
-                    className={favorite ? "animate-pulse" : ""}
+                    fill={favorite ? 'currentColor' : 'none'}
+                    className="transition-all duration-300"
                 />
-            </motion.button>
-
-            {/* Particulas animadas */}
+            </motion.div>
+            
+            {/* Efecto de explosión de corazones */}
             <AnimatePresence>
-                {showParticles && (
-                    <div className="absolute inset-0 pointer-events-none">
-                        {particles.map((particle) => (
+                {isAnimating && (
+                    <>
+                        {[...Array(8)].map((_, i) => (
                             <motion.div
-                                key={particle.id}
-                                className="absolute w-2 h-2 rounded-full bg-red-500"
-                                initial={{ 
-                                    x: 0, 
-                                    y: 0, 
-                                    scale: 0,
-                                    opacity: 1 
-                                }}
-                                animate={{
-                                    x: Math.cos((particle.angle * Math.PI) / 180) * 40,
-                                    y: Math.sin((particle.angle * Math.PI) / 180) * 40,
-                                    scale: [0, 1, 0],
-                                    opacity: [1, 1, 0],
+                                key={i}
+                                className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                                initial={{ scale: 0, opacity: 1 }}
+                                animate={{ 
+                                    scale: 2,
+                                    opacity: 0,
+                                    x: Math.cos(i * 45 * Math.PI / 180) * 40,
+                                    y: Math.sin(i * 45 * Math.PI / 180) * 40,
                                 }}
                                 exit={{ opacity: 0 }}
-                                transition={{
-                                    duration: 0.8,
-                                    delay: particle.delay,
-                                    ease: "easeOut"
-                                }}
-                            />
+                                transition={{ duration: 0.6, ease: 'easeOut' }}
+                            >
+                                <Heart size={10} fill="currentColor" className="text-red-400" />
+                            </motion.div>
                         ))}
-                    </div>
+                        
+                        {/* Círculo de onda */}
+                        <motion.div
+                            className="absolute inset-0 rounded-xl border-2 border-red-400 pointer-events-none"
+                            initial={{ scale: 1, opacity: 1 }}
+                            animate={{ scale: 2, opacity: 0 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.5 }}
+                        />
+                    </>
                 )}
             </AnimatePresence>
-        </div>
+        </motion.button>
     );
 }

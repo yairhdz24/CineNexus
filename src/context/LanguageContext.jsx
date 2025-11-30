@@ -2,6 +2,11 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 const LanguageContext = createContext();
 
+/**
+ * Hook para acceder al contexto de idioma
+ * @returns {Object} Objeto con el idioma actual, función para alternarlo y función de traducción
+ * @throws {Error} Si se usa fuera de LanguageProvider
+ */
 export const useLanguage = () => {
     const context = useContext(LanguageContext);
     if (!context) {
@@ -10,16 +15,26 @@ export const useLanguage = () => {
     return context;
 };
 
+/**
+ * Proveedor de contexto para la gestión de idiomas (español/inglés)
+ * Almacena la preferencia del usuario en localStorage
+ */
 export const LanguageProvider = ({ children }) => {
     const [language, setLanguage] = useState(() => {
         const saved = localStorage.getItem('language');
         return saved || 'es';
     });
 
+    /**
+     * Sincroniza el idioma con localStorage cada vez que cambia
+     */
     useEffect(() => {
         localStorage.setItem('language', language);
     }, [language]);
 
+    /**
+     * Alterna entre español e inglés
+     */
     const toggleLanguage = () => {
         setLanguage(prev => prev === 'es' ? 'en' : 'es');
     };
@@ -53,6 +68,13 @@ export const LanguageProvider = ({ children }) => {
             year: 'Año',
             type: 'Tipo',
             loading: 'Cargando...',
+            additionalInfo: 'Información Adicional',
+            noPlot: 'Sinopsis no disponible para esta película o serie',
+            allTypes: 'Todos los Tipos',
+            movies: 'Películas',
+            series: 'Series',
+            episodes: 'Episodios',
+            allYears: 'Todos los Años',
         },
         en: {
             welcome: 'Welcome to Cine Nexus',
@@ -82,9 +104,21 @@ export const LanguageProvider = ({ children }) => {
             year: 'Year',
             type: 'Type',
             loading: 'Loading...',
+            additionalInfo: 'Additional Information',
+            noPlot: 'Plot not available for this movie or series',
+            allTypes: 'All Types',
+            movies: 'Movies',
+            series: 'Series',
+            episodes: 'Episodes',
+            allYears: 'All Years',
         }
     };
 
+    /**
+     * Función de traducción que devuelve el texto traducido según el idioma actual
+     * @param {string} key - Clave de la traducción
+     * @returns {string} Texto traducido o la clave si no se encuentra
+     */
     const t = (key) => {
         return translations[language][key] || key;
     };
