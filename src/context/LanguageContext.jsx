@@ -1,12 +1,172 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 
-const LanguageContext = createContext();
+const LanguageContext = createContext(null);
 
-/**
- * Hook para acceder al contexto de idioma
- * @returns {Object} Objeto con el idioma actual, función para alternarlo y función de traducción
- * @throws {Error} Si se usa fuera de LanguageProvider
- */
+const translations = {
+    es: {
+        welcomeTo: 'Bienvenido a',
+        subtitle: 'Descubre películas, series y más. Explora ahora.',
+        home: 'Inicio',
+        favorites: 'Favoritos',
+        movies: 'Películas',
+        series: 'Series',
+        search: 'Buscar',
+        trending: 'Películas en Tendencia',
+        popularSeries: 'Series Populares',
+        seeAll: 'Ver todo',
+        loading: 'Cargando...',
+        
+        // Movies & Series pages
+        discoverMovies: 'Descubre las mejores películas',
+        discoverSeries: 'Descubre las mejores series',
+        searchMovies: 'Buscar películas...',
+        searchSeries: 'Buscar series...',
+        searchingMovies: 'Buscando películas',
+        searchingSeries: 'Buscando series',
+        allYears: 'Todos los años',
+        results: 'resultados para',
+        
+        // Movie Detail
+        plot: 'Sinopsis',
+        synopsisNotAvailable: 'Sinopsis no disponible.',
+        castCrew: 'Reparto y Equipo',
+        director: 'Director',
+        writers: 'Guionistas',
+        actors: 'Actores',
+        trailer: 'Tráiler',
+        watchTrailer: 'Ver Tráiler',
+        watchOnYouTube: 'Ver en YouTube',
+        ratings: 'Calificaciones',
+        votes: 'votos',
+        awards: 'Premios',
+        information: 'Información',
+        releaseDate: 'Estreno',
+        country: 'País',
+        language: 'Idioma',
+        boxOffice: 'Taquilla',
+        goBack: 'Volver',
+        error: 'Error',
+        movieNotFound: 'No encontrado',
+        errorLoading: 'Error al cargar',
+        
+        // Favorites
+        yourFavorites: 'Tus Favoritos',
+        noFavorites: 'No tienes favoritos aún',
+        startAdding: '¡Agrega películas a tu colección!',
+        exploreCatalog: 'Explorar catálogo',
+        
+        // Actions
+        viewDetails: 'Ver detalles',
+        share: 'Compartir',
+        clearSearch: 'Limpiar',
+        
+        // Search Results
+        resultsFor: 'Resultados para',
+        noResults: 'Sin resultados',
+        tryDifferent: 'Intenta con otro término',
+        allTypes: 'Todos',
+        movie: 'Película',
+        episode: 'Episodio',
+        
+        // Footer
+        footerDescription: 'Tu destino para descubrir películas y series.',
+        explore: 'Explorar',
+        settings: 'Configuración',
+        contact: 'Contacto',
+        privacy: 'Privacidad',
+        terms: 'Términos',
+        madeWith: 'Hecho con',
+        by: 'por',
+        dataProvidedBy: 'Datos de',
+        
+        // 404
+        pageNotFound: 'Página no encontrada',
+        pageNotFoundDesc: 'La página que buscas no existe.',
+        backToHome: 'Volver al inicio',
+    },
+    en: {
+        welcomeTo: 'Welcome to',
+        subtitle: 'Discover movies, series and more. Explore now.',
+        home: 'Home',
+        favorites: 'Favorites',
+        movies: 'Movies',
+        series: 'Series',
+        search: 'Search',
+        trending: 'Trending Movies',
+        popularSeries: 'Popular Series',
+        seeAll: 'See all',
+        loading: 'Loading...',
+        
+        // Movies & Series pages
+        discoverMovies: 'Discover the best movies',
+        discoverSeries: 'Discover the best series',
+        searchMovies: 'Search movies...',
+        searchSeries: 'Search series...',
+        searchingMovies: 'Searching movies',
+        searchingSeries: 'Searching series',
+        allYears: 'All years',
+        results: 'results for',
+        
+        // Movie Detail
+        plot: 'Synopsis',
+        synopsisNotAvailable: 'Synopsis not available.',
+        castCrew: 'Cast & Crew',
+        director: 'Director',
+        writers: 'Writers',
+        actors: 'Actors',
+        trailer: 'Trailer',
+        watchTrailer: 'Watch Trailer',
+        watchOnYouTube: 'Watch on YouTube',
+        ratings: 'Ratings',
+        votes: 'votes',
+        awards: 'Awards',
+        information: 'Information',
+        releaseDate: 'Release',
+        country: 'Country',
+        language: 'Language',
+        boxOffice: 'Box Office',
+        goBack: 'Go Back',
+        error: 'Error',
+        movieNotFound: 'Not found',
+        errorLoading: 'Error loading',
+        
+        // Favorites
+        yourFavorites: 'Your Favorites',
+        noFavorites: 'No favorites yet',
+        startAdding: 'Add movies to your collection!',
+        exploreCatalog: 'Explore catalog',
+        
+        // Actions
+        viewDetails: 'View details',
+        share: 'Share',
+        clearSearch: 'Clear',
+        
+        // Search Results
+        resultsFor: 'Results for',
+        noResults: 'No results',
+        tryDifferent: 'Try another term',
+        allTypes: 'All',
+        movie: 'Movie',
+        episode: 'Episode',
+        
+        // Footer
+        footerDescription: 'Your destination to discover movies and series.',
+        explore: 'Explore',
+        settings: 'Settings',
+        contact: 'Contact',
+        privacy: 'Privacy',
+        terms: 'Terms',
+        madeWith: 'Made with',
+        by: 'by',
+        dataProvidedBy: 'Data from',
+        
+        // 404
+        pageNotFound: 'Page not found',
+        pageNotFoundDesc: 'The page you are looking for does not exist.',
+        backToHome: 'Back to home',
+    }
+};
+
 export const useLanguage = () => {
     const context = useContext(LanguageContext);
     if (!context) {
@@ -15,112 +175,30 @@ export const useLanguage = () => {
     return context;
 };
 
-/**
- * Proveedor de contexto para la gestión de idiomas (español/inglés)
- * Almacena la preferencia del usuario en localStorage
- */
 export const LanguageProvider = ({ children }) => {
     const [language, setLanguage] = useState(() => {
-        const saved = localStorage.getItem('language');
-        return saved || 'es';
+        try {
+            return localStorage.getItem('cine-nexus-lang') || 'es';
+        } catch {
+            return 'es';
+        }
     });
 
-    /**
-     * Sincroniza el idioma con localStorage cada vez que cambia
-     */
     useEffect(() => {
-        localStorage.setItem('language', language);
+        try {
+            localStorage.setItem('cine-nexus-lang', language);
+            document.documentElement.lang = language;
+        } catch (error) {
+            console.error('Error saving language:', error);
+        }
     }, [language]);
 
-    /**
-     * Alterna entre español e inglés
-     */
     const toggleLanguage = () => {
         setLanguage(prev => prev === 'es' ? 'en' : 'es');
     };
 
-    const translations = {
-        es: {
-            welcome: 'Bienvenido a Cine Nexus',
-            subtitle: 'Descubre millones de películas, series y personas. Explora ahora.',
-            trending: 'Películas en Tendencia',
-            popularSeries: 'Series Populares',
-            seeAll: 'Ver Todo',
-            favorites: 'Favoritos',
-            home: 'Inicio',
-            search: 'Buscar',
-            noFavorites: 'Aún no tienes favoritos.',
-            startAdding: '¡Comienza a agregar películas para construir tu colección!',
-            yourFavorites: 'Tus Favoritos',
-            resultsFor: 'Resultados para',
-            plot: 'Sinopsis',
-            castCrew: 'Reparto y Equipo',
-            director: 'Director',
-            writers: 'Guionistas',
-            actors: 'Actores',
-            trailer: 'Tráiler',
-            watchTrailer: 'Ver Tráiler (Demo)',
-            ratings: 'Calificaciones',
-            movieNotFound: 'Película no encontrada',
-            share: 'Compartir',
-            viewDetails: 'Ver detalles',
-            noPoster: 'Sin Póster',
-            year: 'Año',
-            type: 'Tipo',
-            loading: 'Cargando...',
-            additionalInfo: 'Información Adicional',
-            noPlot: 'Sinopsis no disponible para esta película o serie',
-            allTypes: 'Todos los Tipos',
-            movies: 'Películas',
-            series: 'Series',
-            episodes: 'Episodios',
-            allYears: 'Todos los Años',
-        },
-        en: {
-            welcome: 'Welcome to Cine Nexus',
-            subtitle: 'Discover millions of movies, series and people. Explore now.',
-            trending: 'Trending Movies',
-            popularSeries: 'Popular Series',
-            seeAll: 'See All',
-            favorites: 'Favorites',
-            home: 'Home',
-            search: 'Search',
-            noFavorites: 'No favorites yet.',
-            startAdding: 'Start adding movies to build your collection!',
-            yourFavorites: 'Your Favorites',
-            resultsFor: 'Results for',
-            plot: 'Plot',
-            castCrew: 'Cast & Crew',
-            director: 'Director',
-            writers: 'Writers',
-            actors: 'Actors',
-            trailer: 'Trailer',
-            watchTrailer: 'Watch Trailer (Demo)',
-            ratings: 'Ratings',
-            movieNotFound: 'Movie not found',
-            share: 'Share',
-            viewDetails: 'View details',
-            noPoster: 'No Poster',
-            year: 'Year',
-            type: 'Type',
-            loading: 'Loading...',
-            additionalInfo: 'Additional Information',
-            noPlot: 'Plot not available for this movie or series',
-            allTypes: 'All Types',
-            movies: 'Movies',
-            series: 'Series',
-            episodes: 'Episodes',
-            allYears: 'All Years',
-        }
-    };
-
-    /**
-     * Función de traducción que devuelve el texto traducido según el idioma actual
-     * @param {string} key - Clave de la traducción
-     * @returns {string} Texto traducido o la clave si no se encuentra
-     */
     const t = (key) => {
-        return translations[language][key] || key;
+        return translations[language]?.[key] || translations['es']?.[key] || key;
     };
 
     return (
@@ -129,4 +207,3 @@ export const LanguageProvider = ({ children }) => {
         </LanguageContext.Provider>
     );
 };
-
