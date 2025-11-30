@@ -2,17 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @import './animations.css'; */
-/* Assuming animations are now in tailwind config or this file is not needed if empty */
-
 @layer base {
-    :root {
-        --white: #ffffff;
-        --black: #000000;
-    }
-    
     body {
-        @apply bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:bg-dark-bg text-slate-900 dark:text-dark-text transition-colors duration-300 antialiased;
+        @apply bg-slate-50 dark:bg-dark-bg text-slate-900 dark:text-dark-text transition-colors duration-300 antialiased;
     }
 }
 
@@ -22,15 +14,37 @@
     }
 
     .btn-secondary {
-        @apply px-6 py-3 rounded-xl font-bold text-slate-700 dark:text-white bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 active:scale-95;
+        @apply px-6 py-3 rounded-xl font-bold text-slate-700 dark:text-white bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 active:scale-95;
     }
+}
 
-    /* Texto degradado animado para el hero de Cine Nexus */
-    .text-hero-gradient {
-        @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-400 via-sky-400 to-purple-500;
-        background-size: 200% 200%;
-        animation: hero-gradient-move 6s ease-in-out infinite;
-    }
+/* Sombras mejoradas para ambos modos */
+.shadow-card {
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -2px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.dark .shadow-card {
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.4),
+        0 2px 4px -2px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.shadow-card-hover {
+    box-shadow: 
+        0 20px 25px -5px rgba(0, 0, 0, 0.15),
+        0 8px 10px -6px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.dark .shadow-card-hover {
+    box-shadow: 
+        0 20px 25px -5px rgba(0, 0, 0, 0.5),
+        0 8px 10px -6px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(139, 92, 246, 0.1);
 }
 
 /* Custom Scrollbar */
@@ -39,18 +53,18 @@
 }
 
 ::-webkit-scrollbar-track {
-    @apply bg-transparent;
+    @apply bg-slate-100 dark:bg-slate-900;
 }
 
 ::-webkit-scrollbar-thumb {
-    @apply bg-slate-300 dark:bg-slate-700 rounded-full;
+    @apply bg-slate-400 dark:bg-slate-600 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    @apply bg-slate-400 dark:bg-slate-600;
+    @apply bg-slate-500 dark:bg-slate-500;
 }
 
-/* Animations */
+/* Animaciones */
 .parallax-bg {
     background-attachment: fixed;
     background-position: center;
@@ -59,41 +73,53 @@
 }
 
 @keyframes float {
-    0% {
+    0%, 100% {
         transform: translateY(0px);
     }
-
     50% {
         transform: translateY(-10px);
-    }
-
-    100% {
-        transform: translateY(0px);
     }
 }
 
 @keyframes pulse-glow {
-
-    0%,
-    100% {
-        box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
+    0%, 100% {
+        filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.6));
     }
-
     50% {
-        box-shadow: 0 0 20px rgba(14, 165, 233, 0.8);
+        filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.9));
     }
 }
 
-/* Animacion de degradado para el texto del hero */
-@keyframes hero-gradient-move {
-    0% {
+@keyframes gradient-shift {
+    0%, 100% {
         background-position: 0% 50%;
     }
     50% {
         background-position: 100% 50%;
     }
+}
+
+@keyframes text-shimmer {
+    0% {
+        background-position: -200% center;
+    }
     100% {
-        background-position: 0% 50%;
+        background-position: 200% center;
+    }
+}
+
+@keyframes glow-pulse {
+    0%, 100% {
+        text-shadow: 
+            0 0 10px rgba(139, 92, 246, 0.5),
+            0 0 20px rgba(139, 92, 246, 0.3),
+            0 0 30px rgba(236, 72, 153, 0.2);
+    }
+    50% {
+        text-shadow: 
+            0 0 20px rgba(139, 92, 246, 0.8),
+            0 0 40px rgba(139, 92, 246, 0.5),
+            0 0 60px rgba(236, 72, 153, 0.4);
     }
 }
 
@@ -105,17 +131,99 @@
     animation: pulse-glow 2s infinite;
 }
 
-.card-hover-3d {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+.animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
 }
 
-.card-hover-3d:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+.animate-shimmer {
+    background-size: 200% auto;
+    animation: text-shimmer 3s linear infinite;
 }
 
-.dark .card-hover-3d:hover {
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+.animate-glow {
+    animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* Logo animado de Cine Nexus */
+.logo-text {
+    background: linear-gradient(
+        90deg,
+        #8b5cf6 0%,
+        #ec4899 25%,
+        #06b6d4 50%,
+        #8b5cf6 75%,
+        #ec4899 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: text-shimmer 3s linear infinite;
+    filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.3));
+}
+
+.logo-text:hover {
+    filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.5));
+}
+
+.logo-blur {
+    position: absolute;
+    inset: -10px;
+    background: linear-gradient(90deg, #8b5cf6, #ec4899, #06b6d4);
+    filter: blur(20px);
+    opacity: 0.4;
+    border-radius: 20px;
+    z-index: -1;
+    animation: gradient-shift 3s ease infinite;
+    background-size: 200% 200%;
+}
+
+/* Tarjetas de película mejoradas */
+.movie-card {
+    position: relative;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.dark .movie-card {
+    background: #1e293b;
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        0 0 30px rgba(139, 92, 246, 0.05);
+}
+
+.movie-card:hover {
+    transform: translateY(-12px) rotate(2deg) scale(1.02);
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.dark .movie-card:hover {
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(139, 92, 246, 0.15),
+        0 0 0 1px rgba(139, 92, 246, 0.2);
+}
+
+.movie-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.movie-card:hover::before {
+    opacity: 1;
 }
 
 .stagger-enter {
@@ -124,32 +232,20 @@
     animation: slideUp 0.5s ease-out forwards;
 }
 
-.stagger-enter:nth-child(1) {
-    animation-delay: 0.1s;
-}
-
-.stagger-enter:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.stagger-enter:nth-child(3) {
-    animation-delay: 0.3s;
-}
-
-.stagger-enter:nth-child(4) {
-    animation-delay: 0.4s;
-}
-
-.stagger-enter:nth-child(5) {
-    animation-delay: 0.5s;
-}
-
-/* Animacion de fondo de cine */
-@keyframes slideHorizontal {
-    0% {
-        transform: translateX(-100%);
-    }
-    100% {
-        transform: translateX(100%);
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
+
+.stagger-enter:nth-child(1) { animation-delay: 0.05s; }
+.stagger-enter:nth-child(2) { animation-delay: 0.1s; }
+.stagger-enter:nth-child(3) { animation-delay: 0.15s; }
+.stagger-enter:nth-child(4) { animation-delay: 0.2s; }
+.stagger-enter:nth-child(5) { animation-delay: 0.25s; }
+.stagger-enter:nth-child(6) { animation-delay: 0.3s; }
+.stagger-enter:nth-child(7) { animation-delay: 0.35s; }
+.stagger-enter:nth-child(8) { animation-delay: 0.4s; }
+.stagger-enter:nth-child(9) { animation-delay: 0.45s; }
+.stagger-enter:nth-child(10) { animation-delay: 0.5s; }

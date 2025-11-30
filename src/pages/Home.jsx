@@ -2,12 +2,9 @@ import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import MovieList from '../components/MovieList';
 import { fetchMovies } from '../utils/api';
-import { ArrowRight, TrendingUp, Tv, Film, Popcorn, Star } from 'lucide-react';
+import { ArrowRight, TrendingUp, Tv, Film, Popcorn } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import { TextGenerateEffect } from '../components/ui/TextGenerateEffect';
-import { Sparkles as SparklesBackground } from '../components/ui/Sparkles';
-import StackList from '../components/ui/StackList';
 
 export default function Home() {
     const { t } = useLanguage();
@@ -18,13 +15,15 @@ export default function Home() {
     useEffect(() => {
         const loadHomeData = async () => {
             try {
+                // Cargar películas y series populares
                 const [trendingData, seriesData] = await Promise.all([
                     fetchMovies('marvel', 1, 'movie'),
                     fetchMovies('star wars', 1, 'series')
                 ]);
 
-                if (trendingData.Search) setTrending(trendingData.Search.slice(0, 5));
-                if (seriesData.Search) setSeries(seriesData.Search.slice(0, 5));
+                // Mostrar 10 resultados en cada sección
+                if (trendingData.Search) setTrending(trendingData.Search.slice(0, 10));
+                if (seriesData.Search) setSeries(seriesData.Search.slice(0, 10));
             } catch (error) {
                 console.error("Failed to load home data", error);
             } finally {
@@ -36,201 +35,259 @@ export default function Home() {
     }, []);
 
     return (
-        <div className="min-h-screen pb-20 md:pb-0 relative overflow-hidden bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-black">
-            {/* Hero principal estilo cinepolis */}
+        <div className="min-h-screen pb-20 md:pb-0 bg-slate-50 dark:bg-slate-950">
+            {/* Hero principal */}
             <section className="relative w-full overflow-hidden">
-                {/* Fondo degradado cinematografico segun tema */}
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-100 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-black" />
+                {/* Fondo con gradiente */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-slate-900 to-slate-950" />
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%239C92AC\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]" />
 
-                <div className="relative z-10 container mx-auto px-4 pt-28 pb-16 md:pt-28 md:pb-20">
-                    <div className="grid md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-10 items-center">
+                <div className="relative z-10 container mx-auto px-4 pt-28 pb-16 md:pt-32 md:pb-24">
+                    <div className="grid lg:grid-cols-2 gap-10 items-center">
                         {/* Texto principal */}
-                        <div className="space-y-6 relative">
-                            <SparklesBackground
-                                id="hero-brand"
-                                sparklesCount={28}
-                                className="opacity-60 -inset-10"
-                            />
-                            {/* Etiqueta Cine Nexus con efecto cristal */}
+                        <div className="text-center lg:text-left">
+                            {/* Badge */}
                             <motion.div
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.6, delay: 0.05 }}
-                                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 dark:bg-slate-900/40 backdrop-blur-xl border border-white/30 dark:border-white/10 shadow-lg shadow-slate-900/20"
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl mb-8"
                             >
                                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                                <span className="text-xs uppercase tracking-[0.2em] text-slate-100/80">
-                                    Cine Nexus
-                                </span>
-                                <span className="text-[11px] text-slate-300/80">
-                                    Cartelera en tiempo real
+                                <span className="text-sm text-white/90 font-medium">
+                                    Cine Nexus • Tu portal de entretenimiento
                                 </span>
                             </motion.div>
 
+                            {/* Título con "Cine Nexus" animado */}
                             <motion.h1
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.6 }}
-                                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight"
+                                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6"
                             >
-                                {(() => {
-                                    const full = t('welcome');
-                                    const [first, ...rest] = full.split(' ');
-                                    const restText = rest.join(' ');
-                                    return (
-                                        <>
-                                            <span className="block text-hero-gradient">
-                                                {first}
-                                            </span>
-                                            {restText && (
-                                                <span className="block text-white">
-                                                    {restText}
-                                                </span>
-                                            )}
-                                        </>
-                                    );
-                                })()}
+                                <span className="block text-white mb-2">
+                                    Bienvenido a
+                                </span>
+                                <motion.span 
+                                    className="block"
+                                    style={{
+                                        background: 'linear-gradient(90deg, #8b5cf6, #ec4899, #06b6d4, #8b5cf6)',
+                                        backgroundSize: '200% auto',
+                                        WebkitBackgroundClip: 'text',
+                                        WebkitTextFillColor: 'transparent',
+                                        backgroundClip: 'text',
+                                    }}
+                                    animate={{
+                                        backgroundPosition: ['0% center', '200% center'],
+                                    }}
+                                    transition={{
+                                        duration: 3,
+                                        repeat: Infinity,
+                                        ease: 'linear',
+                                    }}
+                                >
+                                    Cine Nexus
+                                </motion.span>
                             </motion.h1>
+                            
                             <motion.p
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.6, delay: 0.1 }}
-                                className="text-sm sm:text-base md:text-lg text-slate-300 max-w-xl"
+                                className="text-lg md:text-xl text-white/80 max-w-xl mx-auto lg:mx-0 mb-10"
                             >
                                 {t('subtitle')}
                             </motion.p>
 
-                            {/* Chips de atajos rapidos */}
+                            {/* Chips de acceso rápido */}
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.6, delay: 0.2 }}
-                                className="flex flex-wrap gap-3 pt-2"
+                                className="flex flex-wrap justify-center lg:justify-start gap-4"
                             >
                                 <Link
                                     to="/search?q=marvel"
-                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white text-slate-900 text-sm font-semibold hover:bg-slate-100 transition-colors"
+                                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-slate-900 text-sm font-bold hover:bg-slate-100 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1"
                                 >
-                                    <Film size={16} />
-                                    <span>Marvel</span>
+                                    <Film size={18} />
+                                    <span>Películas Marvel</span>
                                 </Link>
                                 <Link
                                     to="/search?q=star wars&type=series"
-                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800 text-slate-100 text-sm font-semibold hover:bg-slate-700 transition-colors"
+                                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-800/80 backdrop-blur-sm text-white text-sm font-bold hover:bg-slate-700 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1"
                                 >
-                                    <Tv size={16} />
-                                    <span>Star Wars</span>
+                                    <Tv size={18} />
+                                    <span>Series Star Wars</span>
                                 </Link>
                                 <Link
                                     to="/favorites"
-                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/90 text-black text-sm font-semibold hover:bg-amber-400 transition-colors"
+                                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-bold hover:from-amber-400 hover:to-orange-400 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1"
                                 >
-                                    <Popcorn size={16} />
+                                    <Popcorn size={18} />
                                     <span>{t('favorites')}</span>
                                 </Link>
                             </motion.div>
-
                         </div>
 
-                        {/* Carrusel sencillo de posters (usando las tendencias si existen) */}
+                        {/* 3 Cards animadas interactivas */}
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.6, delay: 0.2 }}
-                            className="hidden sm:flex justify-end"
+                            initial={{ opacity: 0, x: 50 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.8, delay: 0.3 }}
+                            className="hidden md:flex justify-center lg:justify-end"
                         >
-                            <div className="flex gap-4 md:gap-6">
-                                {(trending.length ? trending.slice(0, 3) : [null, null, null]).map((movie, index) => (
-                                    <div
-                                        key={index}
-                                        className={`relative w-24 h-40 md:w-32 md:h-52 lg:w-36 lg:h-56 rounded-2xl overflow-hidden bg-slate-800/80 border border-slate-700 shadow-2xl ${
-                                            index === 1 ? 'translate-y-4' : index === 2 ? 'translate-y-8' : ''
+                            <div className="relative flex items-end gap-4 lg:gap-6">
+                                {(trending.length >= 3 ? trending.slice(0, 3) : [null, null, null]).map((movie, index) => (
+                                    <motion.div
+                                        key={movie?.imdbID || index}
+                                        className={`relative cursor-grab active:cursor-grabbing ${
+                                            index === 0 ? 'z-10' : index === 1 ? 'z-20' : 'z-10'
                                         }`}
+                                        style={{
+                                            marginTop: index === 1 ? 0 : index === 0 ? '2rem' : '3rem',
+                                        }}
+                                        drag
+                                        dragConstraints={{ left: -50, right: 50, top: -50, bottom: 50 }}
+                                        dragElastic={0.1}
+                                        whileDrag={{ scale: 1.1, zIndex: 30, rotate: 5 }}
+                                        whileHover={{ 
+                                            scale: 1.08, 
+                                            y: -15,
+                                            rotate: index === 0 ? -5 : index === 2 ? 5 : 0,
+                                            transition: { type: "spring", stiffness: 300 }
+                                        }}
+                                        initial={{ 
+                                            opacity: 0, 
+                                            y: 50,
+                                            rotate: index === 0 ? -8 : index === 2 ? 8 : 0
+                                        }}
+                                        animate={{ 
+                                            opacity: 1, 
+                                            y: 0,
+                                            rotate: index === 0 ? -5 : index === 2 ? 5 : 0
+                                        }}
+                                        transition={{ 
+                                            duration: 0.6, 
+                                            delay: 0.4 + index * 0.15,
+                                            type: "spring"
+                                        }}
                                     >
-                                        {movie && movie.Poster && movie.Poster !== 'N/A' ? (
-                                            <img
-                                                src={movie.Poster}
-                                                alt={movie.Title}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full flex flex-col items-center justify-center text-slate-500">
-                                                <Film size={32} className="mb-2" />
-                                                <span className="text-xs text-center px-2">Cine Nexus</span>
-                                            </div>
+                                        <div className={`
+                                            w-28 h-40 sm:w-32 sm:h-48 md:w-36 md:h-52 lg:w-44 lg:h-64
+                                            rounded-2xl overflow-hidden bg-slate-800 
+                                            border-4 border-white/20 shadow-2xl
+                                            ${index === 1 ? 'ring-4 ring-primary-500/50' : ''}
+                                        `}>
+                                            {movie && movie.Poster && movie.Poster !== 'N/A' ? (
+                                                <Link to={`/movie/${movie.imdbID}`}>
+                                                    <img
+                                                        src={movie.Poster}
+                                                        alt={movie.Title}
+                                                        className="w-full h-full object-cover"
+                                                        draggable={false}
+                                                    />
+                                                </Link>
+                                            ) : (
+                                                <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-700 to-slate-900 text-slate-500">
+                                                    <Film size={32} className="mb-2" />
+                                                    <span className="text-xs text-center px-2">Cargando...</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                        
+                                        {/* Efecto de brillo */}
+                                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/60 via-transparent to-white/10 pointer-events-none" />
+                                        
+                                        {/* Título debajo de la card central */}
+                                        {index === 1 && movie && (
+                                            <motion.p 
+                                                className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-white text-xs font-semibold whitespace-nowrap bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm"
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                transition={{ delay: 1 }}
+                                            >
+                                                {movie.Title?.substring(0, 20)}{movie.Title?.length > 20 ? '...' : ''}
+                                            </motion.p>
                                         )}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-                                    </div>
+                                    </motion.div>
                                 ))}
                             </div>
                         </motion.div>
                     </div>
                 </div>
+                
+                {/* Gradiente de transición */}
+                <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-50 dark:from-slate-950 to-transparent" />
             </section>
 
-            <main className="container mx-auto px-4 py-12 space-y-16 relative z-10">
+            {/* Contenido principal */}
+            <main className="container mx-auto px-4 py-12 space-y-20">
+                {/* Sección de películas en tendencia */}
                 <motion.section
                     initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    className="relative"
                 >
-                    <div className="flex justify-between items-center mb-8">
-                        <div className="flex items-center space-x-4">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                        <div className="flex items-center gap-4">
                             <motion.div
                                 whileHover={{ scale: 1.1, rotate: 5 }}
-                                className="p-2 rounded-lg bg-gradient-to-br from-primary-500/20 to-purple-500/20"
+                                className="p-4 rounded-2xl bg-gradient-to-br from-primary-500 to-purple-600 shadow-lg shadow-primary-500/30"
                             >
-                                <TrendingUp className="text-primary-600 dark:text-primary-400" size={24} />
+                                <TrendingUp className="text-white" size={28} />
                             </motion.div>
-                            <div className="space-y-1">
-                                <TextGenerateEffect 
-                                    words={t('trending')}
-                                    className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white"
-                                    duration={0.2}
-                                />
-                                <p className="text-xs md:text-sm uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-                                    Lo mas famoso hoy en Cine Nexus
+                            <div>
+                                <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
+                                    {t('trending')}
+                                </h2>
+                                <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
+                                    Lo más popular esta semana
                                 </p>
                             </div>
                         </div>
                         <Link 
-                            to="/search?q=marvel" 
-                            className="btn-secondary flex items-center group hover:scale-105 transition-transform"
+                            to="/search?q=marvel&type=movie" 
+                            className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-white font-bold shadow-lg hover:shadow-xl transition-all border border-slate-200 dark:border-slate-700 hover:-translate-y-0.5"
                         >
-                            {t('seeAll')} <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                            {t('seeAll')} 
+                            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </div>
                     <MovieList movies={trending} loading={loading} />
                 </motion.section>
 
+                {/* Sección de series populares */}
                 <motion.section
                     initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.2 }}
-                    className="relative"
                 >
-                    <div className="flex justify-between items-center mb-8">
-                        <div className="flex items-center space-x-4">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                        <div className="flex items-center gap-4">
                             <motion.div
                                 whileHover={{ scale: 1.1, rotate: 5 }}
-                                className="p-2 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20"
+                                className="p-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 shadow-lg shadow-purple-500/30"
                             >
-                                <Tv className="text-purple-600 dark:text-purple-400" size={24} />
+                                <Tv className="text-white" size={28} />
                             </motion.div>
-                            <TextGenerateEffect 
-                                words={t('popularSeries')}
-                                className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white"
-                                duration={0.2}
-                            />
+                            <div>
+                                <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
+                                    {t('popularSeries')}
+                                </h2>
+                                <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
+                                    Series que no te puedes perder
+                                </p>
+                            </div>
                         </div>
                         <Link 
                             to="/search?q=star wars&type=series" 
-                            className="btn-secondary flex items-center group hover:scale-105 transition-transform"
+                            className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-white font-bold shadow-lg hover:shadow-xl transition-all border border-slate-200 dark:border-slate-700 hover:-translate-y-0.5"
                         >
-                            {t('seeAll')} <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                            {t('seeAll')} 
+                            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </div>
                     <MovieList movies={series} loading={loading} />

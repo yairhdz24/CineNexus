@@ -1,12 +1,15 @@
-import { useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { fetchMovieDetails } from '../utils/api';
 import FavoriteButton from '../components/FavoriteButton';
-import MovieList from '../components/MovieList';
-import { Star, Calendar, Clock, Film, Share2, Users, User, PenTool, Award, Globe, DollarSign, Box, Languages as LanguagesIcon, Play } from 'lucide-react';
+import { Star, Calendar, Clock, Film, Share2, Users, User, PenTool, Award, Globe, DollarSign, ArrowLeft, Play, ExternalLink } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
+/**
+ * Página de detalle de película
+ * Muestra toda la información de una película o serie seleccionada
+ */
 export default function MovieDetail() {
     const { id } = useParams();
     const { t } = useLanguage();
@@ -16,52 +19,26 @@ export default function MovieDetail() {
 
     useEffect(() => {
         const loadDetails = async () => {
-            setLoading(true);
-            setError(null);
-            setMovie(null);
-            
             if (!id) {
-                console.error('MovieDetail: No ID provided in URL params');
-                setError('ID de pelicula no proporcionado');
+                setError('ID de película no proporcionado');
                 setLoading(false);
                 return;
             }
-            
-            console.log('MovieDetail: Starting to load details for ID:', id);
+
+            setLoading(true);
+            setError(null);
             
             try {
                 const data = await fetchMovieDetails(id);
-                console.log('MovieDetail: Data received from API:', {
-                    hasData: !!data,
-                    response: data?.Response,
-                    hasImdbID: !!data?.imdbID,
-                    title: data?.Title,
-                    error: data?.Error
-                });
                 
-                // Verificar si la respuesta es valida
-                if (!data) {
-                    setError('No se recibieron datos de la API');
-                    setMovie(null);
-                } else if (data.Response === 'False') {
-                    const errorMsg = data.Error || 'No se pudo cargar la informacion de la pelicula';
-                    console.error('API returned error:', errorMsg);
-                    setError(errorMsg);
-                    setMovie(null);
-                } else if (data.imdbID) {
-                    // Datos validos - establecer la pelicula
-                    console.log('Setting movie data:', data.Title, data.imdbID);
+                if (data && data.Response === 'True') {
                 setMovie(data);
-                    setError(null);
                 } else {
-                    console.error('Datos invalidos - no imdbID found:', data);
-                    setError('Datos de pelicula invalidos o no encontrados. La API no retorno un ID valido.');
-                    setMovie(null);
+                    setError(data?.Error || 'No se encontró la película');
                 }
-            } catch (error) {
-                console.error("Failed to load movie details", error);
-                setError('Error al cargar los detalles de la pelicula: ' + (error.message || 'Error desconocido'));
-                setMovie(null);
+            } catch (err) {
+                console.error('Error loading movie:', err);
+                setError('Error al cargar los detalles');
             } finally {
                 setLoading(false);
             }
@@ -70,486 +47,385 @@ export default function MovieDetail() {
         loadDetails();
     }, [id]);
 
-    const containerRef = useRef(null);
-
+    // Estado de carga
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-black">
-                <div className="relative">
-                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary-500"></div>
+            <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary-500 border-t-transparent mx-auto mb-4" />
+                    <p className="text-slate-600 dark:text-slate-400">{t('loading')}</p>
                 </div>
             </div>
         );
     }
 
-    if (!loading && error && !movie) {
+    // Estado de error
+    if (error) {
         return (
-            <div className="min-h-screen flex items-center justify-center px-4 bg-slate-50 dark:bg-black">
+            <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4">
                 <div className="text-center max-w-md">
-                    <Film size={64} className="mx-auto text-slate-400 dark:text-slate-600 mb-4" />
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-                        Error al cargar
-                    </h2>
-                    <p className="text-slate-600 dark:text-slate-400 mb-4">
-                        {error}
-                    </p>
+                    <Film size={64} className="mx-auto text-slate-400 mb-4" />
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Error</h2>
+                    <p className="text-slate-600 dark:text-slate-400 mb-6">{error}</p>
+                    <Link 
+                        to="/" 
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-colors"
+                    >
+                        <ArrowLeft size={20} />
+                        Volver al inicio
+                    </Link>
                 </div>
             </div>
         );
     }
 
-    if (!loading && !movie) {
-        return (
-            <div className="min-h-screen flex items-center justify-center px-4 bg-slate-50 dark:bg-black">
-                <div className="text-center max-w-md">
-                    <Film size={64} className="mx-auto text-slate-400 dark:text-slate-600 mb-4" />
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-                        {t('movieNotFound')}
-                    </h2>
-                    <p className="text-slate-600 dark:text-slate-400 mb-4">
-                        La pelicula o serie no se encontro.
-                    </p>
-                </div>
-            </div>
-        );
-    }
-
+    // Sin película
     if (!movie) {
-        return null;
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+                <p className="text-slate-600 dark:text-slate-400">{t('movieNotFound')}</p>
+            </div>
+        );
     }
+
+    const hasPoster = movie.Poster && movie.Poster !== 'N/A';
+    const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(`${movie.Title} ${movie.Year || ''} official trailer`)}`;
 
     return (
-        <div ref={containerRef} className="min-h-screen pb-20 md:pb-8 relative bg-gradient-to-b from-slate-50 to-white dark:from-black dark:to-slate-950">
-            {/* Hero Section - Estilo Cinépolis */}
-            <div className="relative w-full">
-                {/* Fondo con imagen de la pelicula - estilo cinematografico */}
-                <div className="relative h-[85vh] md:h-[90vh] overflow-hidden">
-                    {/* Imagen de fondo con blur y oscurecimiento */}
-                    {movie.Poster && movie.Poster !== 'N/A' ? (
-                <div
-                    className="absolute inset-0 bg-cover bg-center"
-                            style={{ 
-                                backgroundImage: `url(${movie.Poster})`,
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center'
-                            }}
-                        >
-                            {/* Overlay oscuro para mejor legibilidad */}
-                            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/80 to-black" />
-                            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/70" />
-                </div>
-                    ) : (
-                        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-black to-slate-900" />
-                    )}
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-24">
+            {/* Hero con fondo de imagen */}
+            <div className="relative h-[50vh] md:h-[60vh] overflow-hidden">
+                {/* Imagen de fondo */}
+                {hasPoster && (
+                    <div 
+                        className="absolute inset-0 bg-cover bg-center"
+                        style={{ backgroundImage: `url(${movie.Poster})` }}
+                    />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/40" />
+                
+                {/* Botón de regreso */}
+                <Link 
+                    to="/"
+                    className="absolute top-20 left-4 md:left-8 z-20 p-3 bg-white/10 backdrop-blur-md rounded-xl text-white hover:bg-white/20 transition-colors"
+                >
+                    <ArrowLeft size={24} />
+                </Link>
 
-                    {/* Contenido del Hero - Layout estilo Cinépolis */}
-                    <div className="relative z-10 h-full flex items-end">
-                        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-8 md:pb-12 w-full">
-                            <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start md:items-end">
-                                {/* Poster grande - estilo Cinépolis */}
-                                <motion.div
-                                    initial={{ opacity: 0, y: 30 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.6 }}
-                                    className="flex-shrink-0"
-                                >
-                                    {movie.Poster && movie.Poster !== 'N/A' ? (
-                                        <motion.img
+                {/* Contenido del hero */}
+                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
+                    <div className="container mx-auto flex flex-col md:flex-row gap-6 md:gap-10 items-end">
+                        {/* Poster */}
+                        {hasPoster && (
+                    <motion.img
                         src={movie.Poster}
                         alt={movie.Title}
-                                            className="w-32 h-48 sm:w-40 sm:h-60 md:w-56 md:h-80 lg:w-64 lg:h-96 rounded-lg shadow-2xl border-2 border-white/20 object-cover"
-                                            whileHover={{ scale: 1.02 }}
-                                            transition={{ duration: 0.3 }}
-                                        />
-                                    ) : (
-                                        <div className="w-32 h-48 sm:w-40 sm:h-60 md:w-56 md:h-80 lg:w-64 lg:h-96 rounded-lg bg-slate-800 flex items-center justify-center border-2 border-slate-700">
-                                            <Film className="text-slate-600" size={48} />
-                                        </div>
-                                    )}
-                                </motion.div>
+                                className="w-32 h-48 md:w-48 md:h-72 lg:w-56 lg:h-84 rounded-2xl shadow-2xl border-4 border-white/20 object-cover hidden sm:block"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                            />
+                        )}
 
-                                {/* Informacion principal */}
-                                <div className="flex-1 text-white space-y-4 md:space-y-6 pb-4">
-                                    {/* Titulo */}
-                                    <motion.h1
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ duration: 0.6, delay: 0.1 }}
-                                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight"
-                                    >
-                                        {movie.Title || 'Sin titulo'}
-                                    </motion.h1>
+                        {/* Info principal */}
+                        <div className="flex-1 text-white space-y-4">
+                            <motion.h1 
+                                className="text-3xl md:text-5xl lg:text-6xl font-bold"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                            >
+                                {movie.Title}
+                            </motion.h1>
 
-                                    {/* Informacion secundaria */}
-                                    <motion.div
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ duration: 0.6, delay: 0.2 }}
-                                        className="flex flex-wrap items-center gap-3 sm:gap-4"
-                                    >
-                                        {movie.imdbRating && movie.imdbRating !== 'N/A' && (
-                                            <div className="flex items-center gap-2 bg-yellow-500/20 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-yellow-500/30">
-                                                <Star className="text-yellow-400" size={18} fill="currentColor" />
-                                                <span className="font-bold text-lg">{movie.imdbRating}</span>
-                                                <span className="text-sm text-slate-300">/10</span>
-                                            </div>
-                                        )}
-                                        {movie.Year && (
-                                            <div className="flex items-center gap-2 text-slate-200">
-                                                <Calendar size={18} />
-                                                <span className="text-lg font-medium">{movie.Year}</span>
-                        </div>
-                                        )}
-                                        {movie.Runtime && movie.Runtime !== 'N/A' && (
-                                            <div className="flex items-center gap-2 text-slate-200">
-                                                <Clock size={18} />
-                                                <span className="text-lg font-medium">{movie.Runtime}</span>
-                        </div>
-                                        )}
-                                        {movie.Rated && movie.Rated !== 'N/A' && (
-                                            <div className="px-3 py-1.5 bg-red-600/80 rounded-lg text-sm font-bold border border-red-500/50">
-                                                {movie.Rated}
-                    </div>
-                                        )}
-                                    </motion.div>
+                            {/* Badges de info */}
+                            <motion.div 
+                                className="flex flex-wrap gap-3"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.1 }}
+                            >
+                            {movie.imdbRating && movie.imdbRating !== 'N/A' && (
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-yellow-500/20 backdrop-blur-sm rounded-lg text-sm font-semibold">
+                                        <Star size={16} className="text-yellow-400" fill="currentColor" />
+                                        {movie.imdbRating}/10
+                                </span>
+                            )}
+                            {movie.Year && (
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-lg text-sm">
+                                        <Calendar size={16} />
+                                    {movie.Year}
+                                </span>
+                            )}
+                            {movie.Runtime && movie.Runtime !== 'N/A' && (
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-lg text-sm">
+                                        <Clock size={16} />
+                                    {movie.Runtime}
+                                </span>
+                            )}
+                            {movie.Rated && movie.Rated !== 'N/A' && (
+                                    <span className="px-3 py-1.5 bg-red-500/80 rounded-lg text-sm font-bold">
+                                        {movie.Rated}
+                                    </span>
+                            )}
+                            </motion.div>
 
-                                    {/* Generos */}
-                                    {movie.Genre && movie.Genre !== 'N/A' && (
-                                        <motion.div
-                                            initial={{ opacity: 0, x: -20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            transition={{ duration: 0.6, delay: 0.3 }}
-                                            className="flex flex-wrap gap-2"
+                            {/* Géneros */}
+                        {movie.Genre && movie.Genre !== 'N/A' && (
+                                <motion.div 
+                                    className="flex flex-wrap gap-2"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.2 }}
+                                >
+                                    {movie.Genre.split(', ').map(genre => (
+                                        <span 
+                                            key={genre}
+                                            className="px-4 py-1.5 bg-primary-600/80 backdrop-blur-sm rounded-full text-sm font-medium"
                                         >
-                                            {movie.Genre.split(', ').map((g, index) => (
-                                                <span
-                                                    key={g}
-                                                    className="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium border border-white/20 hover:bg-white/20 transition-colors"
-                                                >
-                                                    {g}
-                                                </span>
-                                            ))}
-                                        </motion.div>
-                                    )}
+                                            {genre}
+                                        </span>
+                                    ))}
+                                </motion.div>
+                            )}
 
-                                    {/* Botones de accion */}
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.6, delay: 0.4 }}
-                                        className="flex items-center gap-4 pt-2"
-                                    >
-                                        <FavoriteButton 
-                                            movie={movie} 
-                                            className="w-12 h-12 md:w-14 md:h-14 !p-0 bg-white/10 hover:bg-red-500/80 backdrop-blur-sm border border-white/20" 
-                                        />
-                                        <motion.button
+                            {/* Botones de acción */}
+                            <motion.div 
+                                className="flex gap-3 pt-2"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.3 }}
+                            >
+                                <FavoriteButton movie={movie} />
+                                <button
                             onClick={() => {
                                 if (navigator.share) {
-                                    navigator.share({
-                                        title: movie.Title,
-                                                        text: `¡Mira ${movie.Title} en Cine Nexus!`,
-                                        url: window.location.href,
-                                    });
+                                            navigator.share({ title: movie.Title, url: window.location.href });
                                 } else {
-                                                    navigator.clipboard.writeText(window.location.href);
-                                                    alert('Enlace copiado al portapapeles');
-                                                }
-                                            }}
-                                            className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-all backdrop-blur-sm border border-white/20"
-                                            aria-label={t('share')}
-                                            whileHover={{ scale: 1.1 }}
-                                            whileTap={{ scale: 0.9 }}
-                                        >
-                                            <Share2 size={20} />
-                                        </motion.button>
-                                    </motion.div>
-                                </div>
-                            </div>
+                                    navigator.clipboard.writeText(window.location.href);
+                                        }
+                                    }}
+                                    className="p-3 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-colors"
+                                >
+                                    <Share2 size={20} />
+                                </button>
+                            </motion.div>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Contenido principal */}
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 grid md:grid-cols-3 gap-6 md:gap-8 relative z-10 bg-black">
-                {/* Columna principal con informacion detallada */}
-                <div className="md:col-span-2 space-y-6 md:space-y-8">
-                    {/* Sinopsis - Siempre mostrar */}
+            <div className="container mx-auto px-4 md:px-8 py-8">
+                <div className="grid lg:grid-cols-3 gap-8">
+                    {/* Columna principal */}
+                    <div className="lg:col-span-2 space-y-8">
+                        {/* Sinopsis */}
                     <motion.section
+                            className="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-8 shadow-xl border border-slate-200 dark:border-slate-700"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="bg-slate-900/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-slate-700/50"
-                    >
-                        <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 flex items-center space-x-2">
-                            {t('plot')}
-                        </h2>
-                        {movie.Plot && movie.Plot !== 'N/A' && movie.Plot.trim() !== '' ? (
-                            <p className="text-slate-300 leading-relaxed text-sm sm:text-base md:text-lg text-justify sm:text-left max-w-none whitespace-pre-wrap">{movie.Plot}</p>
-                        ) : (
-                            <div className="text-center py-8">
-                                <Film className="mx-auto text-slate-600 mb-3" size={32} />
-                                <p className="text-slate-500 italic">Sinopsis no disponible para esta pelicula o serie</p>
-                            </div>
-                        )}
+                        >
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-3">
+                                <Film className="text-primary-500" size={28} />
+                                {t('plot')}
+                            </h2>
+                            <p className="text-slate-700 dark:text-slate-300 text-lg leading-relaxed">
+                                {movie.Plot && movie.Plot !== 'N/A' ? movie.Plot : 'Sinopsis no disponible.'}
+                            </p>
                     </motion.section>
 
-                    {/* Reparto y Equipo - Siempre mostrar la seccion */}
+                        {/* Reparto y equipo */}
                     <motion.section
+                            className="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-8 shadow-xl border border-slate-200 dark:border-slate-700"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.1 }}
-                        className="bg-slate-900/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-slate-700/50"
-                    >
-                        <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">
-                            {t('castCrew')}
-                        </h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-                            {movie.Director && movie.Director !== 'N/A' ? (
-                                <div className="flex items-start space-x-3 p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
-                                    <User className="text-primary-400 mt-0.5 flex-shrink-0" size={20} />
-                                    <div className="flex-1 min-w-0">
-                                        <h3 className="font-semibold text-white mb-2 text-sm sm:text-base">{t('director')}</h3>
-                                        <p className="text-sm sm:text-base text-slate-300 leading-relaxed break-words">{movie.Director}</p>
+                            transition={{ delay: 0.1 }}
+                        >
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
+                                <Users className="text-primary-500" size={28} />
+                                {t('castCrew')}
+                            </h2>
+                            <div className="grid md:grid-cols-2 gap-4">
+                                {movie.Director && movie.Director !== 'N/A' && (
+                                    <div className="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <User className="text-blue-500" size={20} />
+                                            <span className="font-semibold text-slate-900 dark:text-white">{t('director')}</span>
                                     </div>
-                                </div>
-                            ) : (
-                                <div className="flex items-start space-x-3 p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
-                                    <User className="text-slate-500 mt-0.5 flex-shrink-0" size={20} />
-                                    <div className="flex-1 min-w-0">
-                                        <h3 className="font-semibold text-white mb-2 text-sm sm:text-base">{t('director')}</h3>
-                                        <p className="text-sm sm:text-base text-slate-500 italic">No disponible</p>
-                                    </div>
+                                        <p className="text-slate-600 dark:text-slate-400 pl-8">{movie.Director}</p>
                                 </div>
                             )}
-                            {movie.Writer && movie.Writer !== 'N/A' ? (
-                                <div className="flex items-start space-x-3 p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
-                                    <PenTool className="text-purple-400 mt-0.5 flex-shrink-0" size={20} />
-                                    <div className="flex-1 min-w-0">
-                                        <h3 className="font-semibold text-white mb-2 text-sm sm:text-base">{t('writers')}</h3>
-                                        <p className="text-sm sm:text-base text-slate-300 leading-relaxed break-words">{movie.Writer}</p>
+                                {movie.Writer && movie.Writer !== 'N/A' && (
+                                    <div className="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <PenTool className="text-purple-500" size={20} />
+                                            <span className="font-semibold text-slate-900 dark:text-white">{t('writers')}</span>
                                     </div>
-                                </div>
-                            ) : (
-                                <div className="flex items-start space-x-3 p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
-                                    <PenTool className="text-slate-500 mt-0.5 flex-shrink-0" size={20} />
-                                    <div className="flex-1 min-w-0">
-                                        <h3 className="font-semibold text-white mb-2 text-sm sm:text-base">{t('writers')}</h3>
-                                        <p className="text-sm sm:text-base text-slate-500 italic">No disponible</p>
-                                    </div>
+                                        <p className="text-slate-600 dark:text-slate-400 pl-8">{movie.Writer}</p>
                                 </div>
                             )}
-                            {movie.Actors && movie.Actors !== 'N/A' ? (
-                                <div className="sm:col-span-2 flex items-start space-x-3 p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
-                                    <Users className="text-pink-400 mt-0.5 flex-shrink-0" size={20} />
-                                    <div className="flex-1 min-w-0">
-                                        <h3 className="font-semibold text-white mb-2 text-sm sm:text-base">{t('actors')}</h3>
-                                        <p className="text-sm sm:text-base text-slate-300 leading-relaxed break-words">{movie.Actors}</p>
+                                {movie.Actors && movie.Actors !== 'N/A' && (
+                                    <div className="md:col-span-2 p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <Users className="text-pink-500" size={20} />
+                                            <span className="font-semibold text-slate-900 dark:text-white">{t('actors')}</span>
                                     </div>
-                                </div>
-                            ) : (
-                                <div className="sm:col-span-2 flex items-start space-x-3 p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
-                                    <Users className="text-slate-500 mt-0.5 flex-shrink-0" size={20} />
-                                    <div className="flex-1 min-w-0">
-                                        <h3 className="font-semibold text-white mb-2 text-sm sm:text-base">{t('actors')}</h3>
-                                        <p className="text-sm sm:text-base text-slate-500 italic">No disponible</p>
-                                    </div>
+                                        <p className="text-slate-600 dark:text-slate-400 pl-8">{movie.Actors}</p>
                                 </div>
                             )}
                         </div>
                     </motion.section>
 
-                    {/* Informacion adicional */}
+                        {/* Tráiler */}
                     <motion.section
+                            className="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-8 shadow-xl border border-slate-200 dark:border-slate-700"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.15 }}
-                        className="bg-slate-900/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-slate-700/50"
-                    >
-                        <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Informacion Adicional</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {movie.Language && movie.Language !== 'N/A' && (
-                                <div className="flex items-center space-x-3 p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
-                                    <LanguagesIcon className="text-blue-400 flex-shrink-0" size={20} />
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-xs text-slate-400 mb-1">Idioma</p>
-                                        <p className="text-sm font-medium text-white break-words">{movie.Language}</p>
+                            transition={{ delay: 0.2 }}
+                        >
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
+                                <Play className="text-red-500" size={28} />
+                                {t('trailer')}
+                            </h2>
+                            
+                            {/* Botón de tráiler con preview */}
+                            <a 
+                                href={youtubeSearchUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block group"
+                            >
+                                <div className="relative aspect-video bg-slate-900 rounded-xl overflow-hidden">
+                                    {hasPoster && (
+                                        <>
+                                            <div 
+                                                className="absolute inset-0 bg-cover bg-center opacity-50 group-hover:opacity-70 transition-opacity"
+                                                style={{ backgroundImage: `url(${movie.Poster})` }}
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                                        </>
+                                    )}
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                        <motion.div 
+                                            className="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform"
+                                            whileHover={{ scale: 1.1 }}
+                                        >
+                                            <Play size={36} className="text-white ml-1" fill="currentColor" />
+                                        </motion.div>
+                                        <p className="mt-4 text-white font-semibold flex items-center gap-2">
+                                            {t('watchTrailer')}
+                                            <ExternalLink size={16} />
+                                        </p>
                                     </div>
                                 </div>
-                            )}
-                            {movie.Country && movie.Country !== 'N/A' && (
-                                <div className="flex items-center space-x-3 p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
-                                    <Globe className="text-green-400 flex-shrink-0" size={20} />
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-xs text-slate-400 mb-1">Pais</p>
-                                        <p className="text-sm font-medium text-white break-words">{movie.Country}</p>
-                                    </div>
+                            </a>
+                        </motion.section>
+
+                        {/* Información adicional */}
+                        <motion.section
+                            className="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-8 shadow-xl border border-slate-200 dark:border-slate-700"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                        >
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
+                                <Globe className="text-primary-500" size={28} />
+                                Información Adicional
+                            </h2>
+                            <div className="grid sm:grid-cols-2 gap-4">
+                                {movie.Language && movie.Language !== 'N/A' && (
+                                    <div className="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
+                                        <p className="text-sm text-slate-500 dark:text-slate-400">Idioma</p>
+                                        <p className="font-semibold text-slate-900 dark:text-white">{movie.Language}</p>
                                 </div>
                             )}
-                            {movie.BoxOffice && movie.BoxOffice !== 'N/A' && (
-                                <div className="flex items-center space-x-3 p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
-                                    <DollarSign className="text-yellow-400 flex-shrink-0" size={20} />
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-xs text-slate-400 mb-1">Taquilla</p>
-                                        <p className="text-sm font-medium text-white break-words">{movie.BoxOffice}</p>
-                                    </div>
-                                </div>
-                            )}
-                            {movie.Production && movie.Production !== 'N/A' && (
-                                <div className="flex items-center space-x-3 p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
-                                    <Box className="text-purple-400 flex-shrink-0" size={20} />
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-xs text-slate-400 mb-1">Produccion</p>
-                                        <p className="text-sm font-medium text-white break-words">{movie.Production}</p>
-                                    </div>
+                                {movie.Country && movie.Country !== 'N/A' && (
+                                    <div className="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
+                                        <p className="text-sm text-slate-500 dark:text-slate-400">País</p>
+                                        <p className="font-semibold text-slate-900 dark:text-white">{movie.Country}</p>
                                 </div>
                             )}
                             {movie.Released && movie.Released !== 'N/A' && (
-                                <div className="flex items-center space-x-3 p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
-                                    <Calendar className="text-red-400 flex-shrink-0" size={20} />
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-xs text-slate-400 mb-1">Fecha de Estreno</p>
-                                        <p className="text-sm font-medium text-white break-words">{movie.Released}</p>
+                                    <div className="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
+                                        <p className="text-sm text-slate-500 dark:text-slate-400">Fecha de Estreno</p>
+                                        <p className="font-semibold text-slate-900 dark:text-white">{movie.Released}</p>
                                     </div>
-                                </div>
-                            )}
-                            {movie.DVD && movie.DVD !== 'N/A' && (
-                                <div className="flex items-center space-x-3 p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
-                                    <Film className="text-indigo-400 flex-shrink-0" size={20} />
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-xs text-slate-400 mb-1">Fecha DVD</p>
-                                        <p className="text-sm font-medium text-white break-words">{movie.DVD}</p>
-                                    </div>
-                            </div>
-                            )}
-                            </div>
-                    </motion.section>
-
-                    {/* Seccion de trailer */}
-                    <motion.section
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
-                        className="bg-slate-900/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-slate-700/50 overflow-hidden"
-                    >
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl sm:text-2xl font-bold text-white">
-                                {t('trailer')}
-                            </h2>
-                            {movie.Title && (
-                                <motion.button
-                                    onClick={() => {
-                                        const searchQuery = `${movie.Title} ${movie.Year || ''} official trailer`;
-                                        const youtubeUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`;
-                                        window.open(youtubeUrl, '_blank');
-                                    }}
-                                    className="text-xs sm:text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors"
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                >
-                                    <Film size={14} />
-                                    <span>Buscar en YouTube</span>
-                                </motion.button>
-                            )}
-                            </div>
-                        
-                        {/* Contenedor del trailer */}
-                        <div className="aspect-video bg-black rounded-xl overflow-hidden relative group">
-                            <motion.div 
-                                className="w-full h-full flex items-center justify-center relative cursor-pointer"
-                                whileHover={{ scale: 1.01 }}
-                                transition={{ duration: 0.3 }}
-                                onClick={() => {
-                                    const searchQuery = `${movie.Title} ${movie.Year || ''} official trailer`;
-                                    const youtubeUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`;
-                                    window.open(youtubeUrl, '_blank');
-                                }}
-                            >
-                                {movie.Poster && movie.Poster !== 'N/A' ? (
-                                    <>
-                                        <div className="absolute inset-0 bg-cover bg-center opacity-60" style={{ backgroundImage: `url(${movie.Poster})` }} />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-black/50" />
-                                    </>
-                                ) : (
-                                    <div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-slate-900 to-black" />
                                 )}
-                                <motion.div 
-                                    className="z-10 bg-red-600 p-5 sm:p-7 rounded-full group-hover:scale-110 transition-transform shadow-2xl border-4 border-white/20"
-                                    whileHover={{ scale: 1.2, rotate: 5 }}
-                                    animate={{ scale: [1, 1.1, 1] }}
-                                    transition={{ duration: 2, repeat: Infinity }}
-                                >
-                                    <Play className="text-white w-8 h-8 sm:w-10 sm:h-10 ml-1" fill="currentColor" />
-                                </motion.div>
-                                <p className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-white text-sm sm:text-base opacity-0 group-hover:opacity-100 transition-opacity z-10 px-4 py-2 bg-black/70 rounded-lg backdrop-blur-sm font-semibold">
-                                    {t('watchTrailer')}
-                                </p>
-                            </motion.div>
-                        </div>
-                        
-                        {/* Informacion del trailer */}
-                        {movie.Title && (
-                            <div className="mt-4 text-center">
-                                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-2">
-                                    Haz clic en el boton de play para buscar el trailer en YouTube
-                                </p>
-                                <motion.button
-                                    onClick={() => {
-                                        const searchQuery = `${movie.Title} ${movie.Year || ''} official trailer`;
-                                        const youtubeUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`;
-                                        window.open(youtubeUrl, '_blank');
-                                    }}
-                                    className="text-xs sm:text-sm text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors flex items-center space-x-2 mx-auto"
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                >
-                                    <Play size={16} fill="currentColor" />
-                                    <span>Buscar Trailer en YouTube</span>
-                                </motion.button>
+                                {movie.BoxOffice && movie.BoxOffice !== 'N/A' && (
+                                    <div className="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl flex items-center gap-3">
+                                        <DollarSign className="text-green-500" size={24} />
+                                        <div>
+                                            <p className="text-sm text-slate-500 dark:text-slate-400">Taquilla</p>
+                                            <p className="font-semibold text-slate-900 dark:text-white">{movie.BoxOffice}</p>
+                                </div>
+                                    </div>
+                                )}
                             </div>
-                        )}
                     </motion.section>
                 </div>
 
-                {/* Columna lateral con calificaciones */}
-                <div className="space-y-4 md:space-y-6">
+                    {/* Sidebar con calificaciones */}
+                    <div className="space-y-6">
                     <motion.div 
-                        className="bg-slate-900/80 backdrop-blur-sm p-4 sm:p-6 rounded-2xl border border-slate-700/50 shadow-lg"
+                            className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-200 dark:border-slate-700 sticky top-24"
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5, delay: 0.3 }}
-                        whileHover={{ scale: 1.02 }}
                     >
-                        <div className="flex items-center space-x-2 mb-4">
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                             <Award className="text-yellow-500" size={24} />
-                            <h2 className="text-lg sm:text-xl font-bold text-white">
                                 {t('ratings')}
-                            </h2>
+                            </h3>
+                            
+                            <div className="space-y-4">
+                                {/* Rating principal de IMDB */}
+                                {movie.imdbRating && movie.imdbRating !== 'N/A' && (
+                                    <div className="text-center p-4 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-xl">
+                                        <div className="flex items-center justify-center gap-2 mb-2">
+                                            <Star className="text-yellow-500" size={32} fill="currentColor" />
+                                            <span className="text-4xl font-bold text-slate-900 dark:text-white">{movie.imdbRating}</span>
+                                            <span className="text-slate-500">/10</span>
+                                        </div>
+                                        {movie.imdbVotes && movie.imdbVotes !== 'N/A' && (
+                                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                                                {movie.imdbVotes} votos
+                                            </p>
+                                        )}
                         </div>
-                        <div className="space-y-3">
-                            {movie.Ratings && movie.Ratings.length > 0 && movie.Ratings.map((r) => (
-                                <div key={r.Source} className="flex justify-between items-center p-2 rounded-lg bg-slate-800/50 border-b border-slate-700 last:border-0">
-                                    <span className="text-xs sm:text-sm text-slate-300 font-medium">{r.Source}</span>
-                                    <span className="text-xs sm:text-sm font-bold text-white bg-primary-500/20 px-2 py-1 rounded">{r.Value}</span>
+                                )}
+
+                                {/* Otras calificaciones */}
+                                {movie.Ratings && movie.Ratings.length > 0 && movie.Ratings.map((rating) => (
+                                    <div 
+                                        key={rating.Source}
+                                        className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl"
+                                    >
+                                        <span className="text-sm text-slate-600 dark:text-slate-400">{rating.Source}</span>
+                                        <span className="font-bold text-slate-900 dark:text-white">{rating.Value}</span>
                                 </div>
                             ))}
+
+                                {/* Metascore */}
                             {movie.Metascore && movie.Metascore !== 'N/A' && (
-                                <div className="flex justify-between items-center pt-3 mt-3 border-t border-slate-700">
-                                    <span className="text-xs sm:text-sm text-slate-300 font-medium">Metascore</span>
-                                    <span className={`text-xs sm:text-sm font-bold px-3 py-1.5 rounded-lg ${parseInt(movie.Metascore) > 60 ? 'bg-green-500 text-white' :
-                                    parseInt(movie.Metascore) > 40 ? 'bg-yellow-500 text-black' : 'bg-red-500 text-white'
-                                    }`}>{movie.Metascore}</span>
+                                    <div className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
+                                        <span className="text-sm text-slate-600 dark:text-slate-400">Metascore</span>
+                                        <span className={`px-3 py-1 rounded-lg font-bold text-white ${
+                                            parseInt(movie.Metascore) >= 60 ? 'bg-green-500' :
+                                            parseInt(movie.Metascore) >= 40 ? 'bg-yellow-500' : 'bg-red-500'
+                                        }`}>
+                                            {movie.Metascore}
+                                        </span>
                             </div>
                             )}
-                            {movie.imdbVotes && movie.imdbVotes !== 'N/A' && (
-                                <div className="flex justify-between items-center pt-2">
-                                    <span className="text-xs sm:text-sm text-slate-300 font-medium">Votos IMDB</span>
-                                    <span className="text-xs sm:text-sm font-bold text-white">{movie.imdbVotes}</span>
+
+                                {/* Premios */}
+                                {movie.Awards && movie.Awards !== 'N/A' && (
+                                    <div className="p-4 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-xl mt-4">
+                                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Premios</p>
+                                        <p className="text-sm font-medium text-slate-900 dark:text-white">{movie.Awards}</p>
                                 </div>
                             )}
                         </div>
                     </motion.div>
+                    </div>
                 </div>
             </div>
         </div>
