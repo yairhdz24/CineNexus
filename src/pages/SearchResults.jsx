@@ -1,75 +1,154 @@
-import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useFetchMovies } from '../hooks/useFetchMovies';
+import { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
+import { Search, Filter, X } from 'lucide-react';
 import MovieList from '../components/MovieList';
-import Filters from '../components/Filters';
 import Pagination from '../components/Pagination';
-import { SearchX, Search } from 'lucide-react';
+import { fetchMovies } from '../utils/api';
 import { useLanguage } from '../context/LanguageContext';
 
-/**
- * Página de resultados de búsqueda
- * Muestra las películas encontradas según el término de búsqueda
- */
 export default function SearchResults() {
     const { t } = useLanguage();
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const query = searchParams.get('q') || '';
     const initialType = searchParams.get('type') || '';
-
+    const initialYear = searchParams.get('year') || '';
+    
+    const [movies, setMovies] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [totalResults, setTotalResults] = useState(0);
     const [page, setPage] = useState(1);
     const [type, setType] = useState(initialType);
-    const [year, setYear] = useState('');
+    const [year, setYear] = useState(initialYear);
 
-    const { data, loading, error } = useFetchMovies(query, page, type, year);
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
 
     useEffect(() => {
-        setPage(1);
-    }, [query, type, year]);
+        const loadResults = async () => {
+            if (!query) {
+                setMovies([]);
+                setLoading(false);
+                return;
+            }
 
-    const handlePageChange = (newPage) => {
-        setPage(newPage);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+            setLoading(true);
+            try {
+                const data = await fetchMovies(query, page, type, year);
+                setMovies(data.Search || []);
+                setTotalResults(parseInt(data.totalResults) || 0);
+            } catch (error) {
+                setMovies([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadResults();
+    }, [query, page, type, year]);
+
+    const handleFilterChange = (filterType, value) => {
+        const newParams = new URLSearchParams(searchParams);
+        if (value) {
+            newParams.set(filterType, value);
+        } else {
+            newParams.delete(filterType);
+        }
+        setSearchParams(newParams);
+        
+        if (filterType === 'type') setType(value);
+        if (filterType === 'year') setYear(value);
+        setPage(1);
+    };
+
+    const clearFilters = () => {
+        setType('');
+        setYear('');
+        const newParams = new URLSearchParams();
+        newParams.set('q', query);
+        setSearchParams(newParams);
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-24 md:pb-8">
-            <div className="container mx-auto px-4 py-8">
-                {/* Header de búsqueda */}
-                <div className="mb-8">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 rounded-xl bg-primary-100 dark:bg-primary-900/30">
-                            <Search className="text-primary-600 dark:text-primary-400" size={24} />
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-24">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-violet-600 to-purple-600 py-12">
+                <div className="container mx-auto px-4">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-white"
+                    >
+                        <div className="flex items-center gap-3 mb-2">
+                            <Search size={28} />
+                            <h1 className="text-2xl md:text-3xl font-bold">{t('resultsFor')}</h1>
                         </div>
-                        <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
-                            {t('resultsFor')}
-                        </h1>
+                        <p className="text-3xl md:text-4xl font-bold text-white/90">"{query}"</p>
+                        {!loading && <p className="text-white/70 mt-2">{totalResults} {t('results')}</p>}
+                    </motion.div>
+                </div>
+            </div>
+
+            <div className="container mx-auto px-4 py-6">
+                {/* Filters */}
+                <div className="flex flex-wrap items-center gap-3 mb-6">
+                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                        <Filter size={18} />
+                        <span className="text-sm font-medium">Filtros:</span>
                     </div>
-                    <p className="text-xl text-slate-600 dark:text-slate-400 ml-14">
-                        "<span className="font-semibold text-primary-600 dark:text-primary-400">{query}</span>"
-                    </p>
+                    
+                    <select
+                        value={type}
+                        onChange={(e) => handleFilterChange('type', e.target.value)}
+                        className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500"
+                    >
+                        <option value="">{t('allTypes')}</option>
+                        <option value="movie">{t('movie')}</option>
+                        <option value="series">{t('series')}</option>
+                        <option value="episode">{t('episode')}</option>
+                    </select>
+
+                    <select
+                        value={year}
+                        onChange={(e) => handleFilterChange('year', e.target.value)}
+                        className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500"
+                    >
+                        <option value="">{t('allYears')}</option>
+                        {years.map(y => <option key={y} value={y}>{y}</option>)}
+                    </select>
+
+                    {(type || year) && (
+                        <button
+                            onClick={clearFilters}
+                            className="px-4 py-2 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-200 transition-colors flex items-center gap-1"
+                        >
+                            <X size={16} />
+                            {t('clearSearch')}
+                        </button>
+                    )}
                 </div>
 
-                {/* Filtros */}
-                <Filters type={type} setType={setType} year={year} setYear={setYear} />
+                {/* Results */}
+                <MovieList movies={movies} loading={loading} />
 
-                {/* Resultados */}
-                {error ? (
-                    <div className="text-center py-20 bg-white dark:bg-slate-800/50 rounded-2xl shadow-lg">
-                        <SearchX size={64} className="mx-auto text-slate-400 dark:text-slate-600 mb-4" />
-                        <p className="text-xl text-slate-700 dark:text-slate-300 font-medium">{error}</p>
+                {/* No results */}
+                {!loading && movies.length === 0 && (
+                    <div className="text-center py-20">
+                        <Search size={48} className="mx-auto text-slate-400 mb-4" />
+                        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{t('noResults')}</h2>
+                        <p className="text-slate-500">{t('tryDifferent')}</p>
                     </div>
-                ) : (
-                    <>
-                        <MovieList movies={data?.Search} loading={loading} />
-                        {data?.totalResults && (
-                            <Pagination
-                                currentPage={page}
-                                totalResults={parseInt(data.totalResults)}
-                                onPageChange={handlePageChange}
-                            />
-                        )}
-                    </>
+                )}
+
+                {/* Pagination */}
+                {totalResults > 10 && (
+                    <div className="mt-8">
+                        <Pagination
+                            currentPage={page}
+                            totalResults={totalResults}
+                            onPageChange={setPage}
+                        />
+                    </div>
                 )}
             </div>
         </div>

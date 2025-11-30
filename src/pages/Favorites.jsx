@@ -1,77 +1,64 @@
-import { useFavorites } from '../context/FavoritesContext';
 import { motion } from 'motion/react';
-import MovieList from '../components/MovieList';
-import { Heart, HeartOff } from 'lucide-react';
-import { Sparkles } from '../components/ui/Sparkles';
+import { Heart, Film, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useFavorites } from '../context/FavoritesContext';
 import { useLanguage } from '../context/LanguageContext';
+import MovieList from '../components/MovieList';
 
-/**
- * Página de películas favoritas
- * Muestra las películas guardadas por el usuario
- */
 export default function Favorites() {
     const { favorites } = useFavorites();
     const { t } = useLanguage();
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-20 relative">
-            <div className="absolute inset-0 -z-10 overflow-hidden">
-                <Sparkles id="favorites-sparkles" sparklesCount={25} className="opacity-20 dark:opacity-30" />
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-24">
+            {/* Header */}
+            <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-pink-600 py-16 md:py-20">
+                <div className="container mx-auto px-4">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-center text-white"
+                    >
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl mb-4">
+                            <Heart size={32} className="text-white" fill="currentColor" />
+                        </div>
+                        <h1 className="text-3xl md:text-4xl font-bold mb-2">{t('yourFavorites')}</h1>
+                        <p className="text-white/80">
+                            {favorites.length > 0 
+                                ? `${favorites.length} ${favorites.length === 1 ? 'película' : 'películas'}`
+                                : t('noFavorites')
+                            }
+                        </p>
+                    </motion.div>
+                </div>
             </div>
 
+            {/* Content */}
             <div className="container mx-auto px-4 py-8">
-                {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="flex items-center gap-4 mb-10"
-                >
-                    <motion.div
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
-                        className="p-3 rounded-xl bg-red-100 dark:bg-red-900/30 shadow-lg"
-                    >
-                        <Heart className="text-red-500" size={32} fill="currentColor" />
-                    </motion.div>
-                    <div>
-                        <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
-                            {t('yourFavorites')}
-                        </h1>
-                        <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
-                            {favorites.length} {favorites.length === 1 ? 'película guardada' : 'películas guardadas'}
-                        </p>
-                    </div>
-                </motion.div>
-
-                {/* Contenido */}
-                {favorites.length === 0 ? (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5 }}
-                        className="text-center py-20 bg-white dark:bg-slate-800/50 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 shadow-lg"
-                    >
-                        <motion.div
-                            animate={{ scale: [1, 1.1, 1] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                        >
-                            <HeartOff size={64} className="mx-auto text-slate-400 dark:text-slate-600 mb-4" />
-                        </motion.div>
-                        <p className="text-2xl font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                            {t('noFavorites')}
-                        </p>
-                        <p className="text-slate-500 dark:text-slate-500">
-                            {t('startAdding')}
-                        </p>
-                    </motion.div>
+                {favorites.length > 0 ? (
+                    <MovieList movies={favorites} loading={false} />
                 ) : (
-                    <motion.div
+                    <motion.div 
+                        className="text-center py-20"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
                     >
-                        <MovieList movies={favorites} />
+                        <div className="inline-flex items-center justify-center w-24 h-24 bg-slate-100 dark:bg-slate-800 rounded-full mb-6">
+                            <Film size={48} className="text-slate-400" />
+                        </div>
+                        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                            {t('noFavorites')}
+                        </h2>
+                        <p className="text-slate-500 dark:text-slate-400 mb-6 max-w-md mx-auto">
+                            {t('startAdding')}
+                        </p>
+                        <Link 
+                            to="/"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-full transition-all"
+                        >
+                            {t('exploreCatalog')}
+                            <ArrowRight size={18} />
+                        </Link>
                     </motion.div>
                 )}
             </div>
