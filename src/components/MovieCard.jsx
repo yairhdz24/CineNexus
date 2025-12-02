@@ -33,8 +33,33 @@ export default function MovieCard({ movie }) {
                     {hasPoster ? (
                         <img src={movie.Poster} alt={movie.Title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
                     ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800">
-                            <Film size={48} className="text-slate-400 dark:text-slate-500 mb-3" />
+                        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-violet-500 via-purple-500 to-pink-500 relative overflow-hidden">
+                            {/* Decorative film strip pattern */}
+                            <div className="absolute top-0 left-0 right-0 h-8 bg-black/10 flex items-center justify-around px-2">
+                                {[...Array(8)].map((_, i) => (
+                                    <div key={i} className="w-3 h-4 bg-white/20 rounded-sm" />
+                                ))}
+                            </div>
+                            <div className="absolute bottom-0 left-0 right-0 h-8 bg-black/10 flex items-center justify-around px-2">
+                                {[...Array(8)].map((_, i) => (
+                                    <div key={i} className="w-3 h-4 bg-white/20 rounded-sm" />
+                                ))}
+                            </div>
+                            
+                            {/* Main content */}
+                            <div className="z-10 flex flex-col items-center justify-center text-center px-6 space-y-4">
+                                <Film size={64} className="text-white/90 drop-shadow-lg" strokeWidth={1.5} />
+                                <div className="space-y-1">
+                                    <p className="text-white font-bold text-lg tracking-wide drop-shadow-md">CineNexus</p>
+                                    <p className="text-white/90 text-sm font-medium">Póster No Disponible</p>
+                                    <p className="text-white/80 text-xs">Poster Not Available</p>
+                                </div>
+                            </div>
+                            
+                            {/* Subtle overlay pattern */}
+                            <div className="absolute inset-0 opacity-10" style={{
+                                backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px)'
+                            }} />
                         </div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

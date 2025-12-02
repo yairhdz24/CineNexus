@@ -32,7 +32,7 @@ export default function Home() {
     }, []);
 
     return (
-        <div className="min-h-screen pb-20 md:pb-0 bg-slate-50 dark:bg-slate-950">
+        <div className="min-h-screen pb-20 md:pb-0 bg-transparent dark:bg-slate-950">
             {/* Hero con Vortex */}
             <section className="relative w-full h-[500px] md:h-[550px] overflow-hidden">
                 <Vortex
@@ -130,8 +130,14 @@ export default function Home() {
                                                         <img src={movie.Poster} alt={movie.Title} className="w-full h-full object-cover" draggable={false} />
                                                     </Link>
                                                 ) : (
-                                                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-700 to-slate-900 text-slate-500">
-                                                        <Film size={32} />
+                                                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-violet-500 via-purple-500 to-pink-500 relative overflow-hidden">
+                                                        {/* Film icon */}
+                                                        <Film size={40} className="text-white/90 mb-2" strokeWidth={1.5} />
+                                                        <p className="text-white/80 text-[10px] font-medium">CineNexus</p>
+                                                        {/* Pattern overlay */}
+                                                        <div className="absolute inset-0 opacity-10" style={{
+                                                            backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,0.1) 5px, rgba(255,255,255,0.1) 10px)'
+                                                        }} />
                                                     </div>
                                                 )}
                                             </div>

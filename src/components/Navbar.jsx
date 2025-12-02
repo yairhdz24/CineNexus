@@ -1,11 +1,31 @@
 import { Link, NavLink } from 'react-router-dom';
 import { Film, Home, Heart, Languages, Clapperboard, Tv } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useState, useEffect } from 'react';
 import ToggleTheme from './ToggleTheme';
 import { useLanguage } from '../context/LanguageContext';
+import logoDark from '../../public/CineNexus/2.png';
+import logoLight from '../../public/CineNexus/1.png';
 
 export default function Navbar() {
     const { t, language, toggleLanguage } = useLanguage();
+    const [isDark, setIsDark] = useState(false);
+
+    useEffect(() => {
+        const updateTheme = () => {
+            setIsDark(document.documentElement.classList.contains('dark'));
+        };
+
+        updateTheme();
+
+        const observer = new MutationObserver(updateTheme);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class'],
+        });
+
+        return () => observer.disconnect();
+    }, []);
 
     const navLinks = [
         { to: '/', icon: Home, label: t('home') },
@@ -19,12 +39,11 @@ export default function Navbar() {
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between h-16">
                     <Link to="/" className="flex items-center gap-2.5">
-                        <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }} className="p-2 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg">
-                            <Film className="text-white" size={22} />
-                        </motion.div>
-                        <span className="text-xl font-bold bg-gradient-to-r from-violet-600 to-pink-600 bg-clip-text text-transparent hidden sm:block">
-                            Cine Nexus
-                        </span>
+                        {isDark ? (
+                            <img src={logoDark} alt="CineNexus Logo" className="w-42 h-44" />
+                        ) : (
+                            <img src={logoLight} alt="CineNexus Logo" className="w-42 h-44" />
+                        )}
                     </Link>
 
                     {/* Nav Links */}
