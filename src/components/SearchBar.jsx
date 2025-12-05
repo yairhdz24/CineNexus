@@ -91,36 +91,39 @@ export default function SearchBar({ initialValue = '', className = '' }) {
 
     return (
         <div ref={searchRef} className={`relative w-full max-w-xl ${className}`}>
-            <form onSubmit={handleSubmit} className="relative">
-                {/* Input de búsqueda redondeado */}
-                <div className="relative">
-                    <input
-                        type="text"
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        onFocus={() => results.length > 0 && setShowResults(true)}
-                        placeholder={`${t('search')} películas, series...`}
-                        className="w-full py-3 pl-12 pr-12 text-slate-800 dark:text-white bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-600 rounded-full shadow-lg focus:shadow-xl focus:outline-none focus:border-primary-500 dark:focus:border-primary-400 placeholder-slate-400 dark:placeholder-slate-500 transition-all duration-300"
-                        aria-label="Campo de búsqueda"
-                    />
-                    
-                    {/* Icono de búsqueda */}
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" size={20} />
-                    
-                    {/* Botón limpiar / loading */}
-                    {query && (
-                        <button
-                            type="button"
-                            onClick={clearSearch}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-                        >
-                            {loading ? (
-                                <div className="w-5 h-5 border-2 border-slate-300 border-t-primary-500 rounded-full animate-spin" />
-                            ) : (
-                                <X size={18} />
-                            )}
-                        </button>
-                    )}
+            <form onSubmit={handleSubmit} className="relative group z-50">
+                {/* Glow effect container */}
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-violet-600 via-pink-600 to-cyan-600 rounded-full opacity-30 group-hover:opacity-100 blur transition duration-500" />
+
+                {/* Input container */}
+                <div className="relative flex items-center bg-white dark:bg-slate-900 rounded-full p-0.5">
+                    <div className="flex-1 flex items-center bg-slate-50 dark:bg-slate-800 rounded-full px-4 py-2 relative z-10">
+                        <Search className="text-slate-400 dark:text-slate-500 mr-3 group-focus-within:text-violet-500 transition-colors" size={20} />
+                        <input
+                            type="text"
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            onFocus={() => results.length > 0 && setShowResults(true)}
+                            placeholder={`${t('search')} películas, series...`}
+                            className="w-full bg-transparent border-none outline-none text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm font-medium"
+                            aria-label="Campo de búsqueda"
+                        />
+
+                        {/* Botón limpiar / loading */}
+                        {query && (
+                            <button
+                                type="button"
+                                onClick={clearSearch}
+                                className="ml-2 p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                            >
+                                {loading ? (
+                                    <div className="w-4 h-4 border-2 border-slate-300 border-t-violet-500 rounded-full animate-spin" />
+                                ) : (
+                                    <X size={16} />
+                                )}
+                            </button>
+                        )}
+                    </div>
                 </div>
             </form>
 
@@ -144,8 +147,8 @@ export default function SearchBar({ initialValue = '', className = '' }) {
                             >
                                 {/* Mini poster */}
                                 {movie.Poster && movie.Poster !== 'N/A' ? (
-                                    <img 
-                                        src={movie.Poster} 
+                                    <img
+                                        src={movie.Poster}
                                         alt={movie.Title}
                                         className="w-10 h-14 object-cover rounded-lg shadow"
                                     />
@@ -154,7 +157,7 @@ export default function SearchBar({ initialValue = '', className = '' }) {
                                         <Search size={16} className="text-slate-400" />
                                     </div>
                                 )}
-                                
+
                                 {/* Info */}
                                 <div className="flex-1 min-w-0">
                                     <p className="font-semibold text-slate-900 dark:text-white truncate">

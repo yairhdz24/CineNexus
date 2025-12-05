@@ -2,10 +2,13 @@ import { Link, NavLink } from 'react-router-dom';
 import { Film, Home, Heart, Languages, Clapperboard, Tv } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
+import logoDark from '../assets/2.png';
+import logoLight from '../assets/1.png';
 import ToggleTheme from './ToggleTheme';
 import { useLanguage } from '../context/LanguageContext';
-import logoDark from '../../public/CineNexus/2.png';
-import logoLight from '../../public/CineNexus/1.png';
+
+
+import SearchBar from './SearchBar';
 
 export default function Navbar() {
     const { t, language, toggleLanguage } = useLanguage();
@@ -24,7 +27,9 @@ export default function Navbar() {
             attributeFilter: ['class'],
         });
 
-        return () => observer.disconnect();
+        return () => {
+            observer.disconnect();
+        };
     }, []);
 
     const navLinks = [
@@ -35,50 +40,62 @@ export default function Navbar() {
     ];
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm backdrop-blur-xl">
+            {/* Gradient Line Top */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-violet-600 via-pink-600 to-cyan-600" />
+
             <div className="container mx-auto px-4">
-                <div className="flex items-center justify-between h-16">
-                    <Link to="/" className="flex items-center gap-2.5">
+                <div className="flex items-center justify-between h-24 gap-4">
+                    {/* Logo */}
+                    <Link to="/" className="flex-shrink-0 flex items-center gap-2.5 transform hover:scale-105 transition-transform">
                         {isDark ? (
-                            <img src={logoDark} alt="CineNexus Logo" className="w-42 h-44" />
+                            <img src={logoDark} alt="CineNexus Logo" className="w-auto h-20" />
                         ) : (
-                            <img src={logoLight} alt="CineNexus Logo" className="w-42 h-44" />
+                            <img src={logoLight} alt="CineNexus Logo" className="w-auto h-20" />
                         )}
                     </Link>
 
-                    {/* Nav Links */}
-                    <div className="hidden md:flex items-center gap-1">
-                        {navLinks.map((link) => (
-                            <NavLink
-                                key={link.to}
-                                to={link.to}
-                                end={link.to === '/'}
-                                className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all ${
-                                    isActive 
-                                        ? 'text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/30' 
-                                        : 'text-slate-600 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                                }`}
-                            >
-                                <link.icon size={18} />
-                                {link.label}
-                            </NavLink>
-                        ))}
+                    {/* Search Bar - Hidden on mobile, visible on desktop */}
+                    <div className="hidden md:block flex-1 max-w-md mx-4">
+                        <SearchBar className="w-full" />
                     </div>
 
-                    <div className="flex items-center gap-2">
-                        <motion.button
-                            onClick={toggleLanguage}
-                            className="flex items-center gap-2 px-3 py-2 text-slate-600 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 transition-colors rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                        >
-                            <Languages size={20} className="text-violet-500" />
-                            <span className="text-sm font-medium">{language === 'es' ? '🇺🇸' : '🇪🇸'}</span>
-                        </motion.button>
-                        <ToggleTheme />
+                    {/* Nav Links & Actions */}
+                    <div className="flex items-center gap-4">
+                        {/* Desktop Nav Links */}
+                        <div className="hidden lg:flex items-center gap-1 bg-slate-100/50 dark:bg-slate-800/50 p-1 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm">
+                            {navLinks.map((link) => (
+                                <NavLink
+                                    key={link.to}
+                                    to={link.to}
+                                    end={link.to === '/'}
+                                    className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all ${isActive
+                                        ? 'text-white bg-gradient-to-r from-violet-600 to-pink-600 shadow-lg'
+                                        : 'text-slate-600 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-white dark:hover:bg-slate-700'
+                                        }`}
+                                >
+                                    <link.icon size={16} />
+                                    {link.label}
+                                </NavLink>
+                            ))}
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-700">
+                            <motion.button
+                                onClick={toggleLanguage}
+                                className="flex items-center justify-center w-10 h-10 text-slate-600 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 transition-colors rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
+                                whileHover={{ scale: 1.1, rotate: 180 }}
+                                whileTap={{ scale: 0.9 }}
+                            >
+                                <Languages size={20} />
+                            </motion.button>
+                            <ToggleTheme />
+                        </div>
                     </div>
                 </div>
             </div>
         </nav>
     );
 }
+

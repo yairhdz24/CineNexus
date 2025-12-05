@@ -34,7 +34,7 @@ export function FavoritesProvider({ children }) {
 
     const addFavorite = (movie) => {
         if (!movie || !movie.imdbID) return;
-        
+
         setFavorites(prev => {
             // Verificar si ya existe
             if (prev.some(fav => fav.imdbID === movie.imdbID)) {
@@ -56,6 +56,10 @@ export function FavoritesProvider({ children }) {
         setFavorites(prev => prev.filter(movie => movie.imdbID !== imdbID));
     };
 
+    const clearFavorites = () => {
+        setFavorites([]);
+    };
+
     const isFavorite = (imdbID) => {
         if (!imdbID) return false;
         return favorites.some(movie => movie.imdbID === imdbID);
@@ -63,7 +67,7 @@ export function FavoritesProvider({ children }) {
 
     const toggleFavorite = (movie) => {
         if (!movie || !movie.imdbID) return;
-        
+
         if (isFavorite(movie.imdbID)) {
             removeFavorite(movie.imdbID);
         } else {
@@ -72,12 +76,13 @@ export function FavoritesProvider({ children }) {
     };
 
     return (
-        <FavoritesContext.Provider value={{ 
-            favorites, 
-            addFavorite, 
-            removeFavorite, 
+        <FavoritesContext.Provider value={{
+            favorites,
+            addFavorite,
+            removeFavorite,
+            clearFavorites,
             isFavorite,
-            toggleFavorite 
+            toggleFavorite
         }}>
             {children}
         </FavoritesContext.Provider>

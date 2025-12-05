@@ -3,12 +3,13 @@
 // Descripción: Tarjeta de película con efectos 3D (Adaptada para móvil)
 // ============================================
 
+import logoDark from '../assets/2.png';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import FavoriteButton from './FavoriteButton';
 import { Calendar, Film, Tv, Info, Star } from 'lucide-react';
 import { useState } from 'react';
-import logoDark from '../../public/CineNexus/2.png';
+
 
 export default function MovieCard({ movie }) {
     // Estados
@@ -86,9 +87,9 @@ export default function MovieCard({ movie }) {
                                 <img
                                     src={logoDark}
                                     alt="CineNexus"
-                                    className="w-24 md:w-32 h-auto mb-4 opacity-50"
+                                    className="w-32 md:w-36 h-auto mb-4 opacity-50"
                                 />
-                                <p className="text-white/60 text-xs md:text-sm font-semibold">Sin Póster</p>
+                                {/* <p className="text-white/60 text-xs md:text-sm font-semibold">Sin Póster</p> */}
                             </div>
                         )}
 

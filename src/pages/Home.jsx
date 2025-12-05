@@ -17,13 +17,10 @@ export default function Home() {
     const [series, setSeries] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Estado de filtros
+    // Estado de filtros (simplificado)
     const [filters, setFilters] = useState({
-        genre: 'all',
         year: 'all',
-        quality: 'all',
-        sort: 'popular',
-        type: 'all'
+        type: 'all',
     });
 
     // Cargar datos cuando cambian los filtros
@@ -32,10 +29,8 @@ export default function Home() {
             try {
                 setLoading(true);
 
-                // Determinar query de búsqueda basado en género
-                const searchQuery = filters.genre !== 'all' ?
-                    getGenreSearchQuery(filters.genre) :
-                    'popular';
+                // Query de búsqueda base
+                const searchQuery = 'popular';
 
                 // Filtro de año si está seleccionado
                 const yearQuery = filters.year !== 'all' && filters.year.length === 4 ?
@@ -69,26 +64,11 @@ export default function Home() {
         };
 
         loadHomeData();
-    }, [filters.genre, filters.year, filters.type]);
+    }, [filters.year, filters.type]);
 
-    // Mapeo de géneros a queries de búsqueda
-    const getGenreSearchQuery = (genreId) => {
-        const genreMap = {
-            action: 'action',
-            comedy: 'comedy',
-            drama: 'drama',
-            horror: 'horror',
-            scifi: 'star trek',
-            romance: 'romance',
-            thriller: 'thriller',
-            animation: 'pixar',
-            adventure: 'adventure',
-        };
-        return genreMap[genreId] || 'popular';
-    };
 
     return (
-        <div className="min-h-screen pb-20 md:pb-0 bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300 pt-28">
 
             {/* SECCION: Hero Carousel */}
             <HeroCarousel movies={heroMovies} />

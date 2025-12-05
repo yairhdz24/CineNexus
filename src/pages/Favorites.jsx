@@ -6,7 +6,7 @@ import { useLanguage } from '../context/LanguageContext';
 import MovieList from '../components/MovieList';
 
 export default function Favorites() {
-    const { favorites } = useFavorites();
+    const { favorites, clearFavorites } = useFavorites();
     const { t } = useLanguage();
 
     return (
@@ -23,12 +23,21 @@ export default function Favorites() {
                             <Heart size={32} className="text-white" fill="currentColor" />
                         </div>
                         <h1 className="text-3xl md:text-4xl font-bold mb-2">{t('yourFavorites')}</h1>
-                        <p className="text-white/80">
-                            {favorites.length > 0 
+                        <p className="text-white/80 mb-6">
+                            {favorites.length > 0
                                 ? `${favorites.length} ${favorites.length === 1 ? 'película' : 'películas'}`
                                 : t('noFavorites')
                             }
                         </p>
+
+                        {favorites.length > 0 && (
+                            <button
+                                onClick={clearFavorites}
+                                className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-full text-sm font-bold backdrop-blur-sm transition-all border border-white/10 hover:border-white/30"
+                            >
+                                {t('clearFavorites') || 'Borrar Todo'}
+                            </button>
+                        )}
                     </motion.div>
                 </div>
             </div>
@@ -38,7 +47,7 @@ export default function Favorites() {
                 {favorites.length > 0 ? (
                     <MovieList movies={favorites} loading={false} />
                 ) : (
-                    <motion.div 
+                    <motion.div
                         className="text-center py-20"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -52,7 +61,7 @@ export default function Favorites() {
                         <p className="text-slate-500 dark:text-slate-400 mb-6 max-w-md mx-auto">
                             {t('startAdding')}
                         </p>
-                        <Link 
+                        <Link
                             to="/"
                             className="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-full transition-all"
                         >

@@ -3,8 +3,8 @@ import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useState, useEffect } from 'react';
-import logoDark from '../../public/CineNexus/2.png';
-import logoLight from '../../public/CineNexus/1.png';
+import logoDark from '../assets/2.png';
+import logoLight from '../assets/1.png';
 
 export default function Footer() {
     const { t, language, toggleLanguage } = useLanguage();
@@ -44,15 +44,15 @@ export default function Footer() {
 
             <div className="container mx-auto px-6 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-16">
-                    
+
                     {/* --- Columna 1: Brand --- */}
                     <div className="lg:col-span-5 flex flex-col gap-6">
                         <Link to="/" className="inline-block w-fit">
                             <motion.div whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
                                 {/* Forzamos logoDark o Light según prefieras, o mantenemos tu lógica */}
-                                <img 
-                                    src={isDark ? logoDark : logoLight} 
-                                    alt="CineNexus Logo" 
+                                <img
+                                    src={isDark ? logoDark : logoLight}
+                                    alt="CineNexus Logo"
                                     className={`w-48 h-auto object-contain ${!isDark ? 'brightness-0 invert' : ''}`} // Truco: Invertir brillo si el footer es negro pero el modo es light
                                 />
                             </motion.div>
@@ -60,11 +60,11 @@ export default function Footer() {
                         <p className="text-slate-400 text-base leading-relaxed max-w-sm">
                             {t('footerDescription')}
                         </p>
-                        
+
                         {/* Botón de Idioma Estilizado */}
                         <div className="mt-4">
-                            <button 
-                                onClick={toggleLanguage} 
+                            <button
+                                onClick={toggleLanguage}
                                 className="group relative inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:border-violet-500/50 hover:bg-white/10 transition-all duration-300 backdrop-blur-md"
                             >
                                 <Globe size={16} className="text-violet-400 group-hover:rotate-180 transition-transform duration-500" />
@@ -96,7 +96,7 @@ export default function Footer() {
                     {/* --- Columna 3: Conectar --- */}
                     <div className="lg:col-span-4">
                         <h3 className="text-lg font-bold mb-6">{t('contact')}</h3>
-                        
+
                         {/* Email Card */}
                         <a href="mailto:contact@cinenexus.com" className="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-br from-white/5 to-transparent border border-white/5 hover:border-violet-500/30 hover:shadow-[0_0_30px_-10px_rgba(139,92,246,0.3)] transition-all duration-300 mb-8 group">
                             <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400 group-hover:scale-110 transition-transform">
@@ -132,7 +132,7 @@ export default function Footer() {
                     <p className="text-slate-500 text-sm">
                         © {currentYear} CineNexus. All rights reserved.
                     </p>
-                    
+
                     <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/5 backdrop-blur-sm">
                         <span className="text-slate-400 text-sm">{t('madeWith')}</span>
                         <Heart size={14} className="text-red-500 fill-red-500 animate-[pulse_1.5s_ease-in-out_infinite]" />
