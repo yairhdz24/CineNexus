@@ -1,4 +1,4 @@
-# Cine Nexus - Aplicación de Búsqueda de Películas
+# Cine Nexus - Aplicación de Búsqueda de Películas y Series
 
 Una aplicación moderna y visualmente atractiva para buscar películas y series, construida con React, TailwindCSS y la API de OMDb.
 
