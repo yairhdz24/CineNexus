@@ -100,7 +100,7 @@ export default function Home() {
             />
 
             {/* SECCION: Contenido Principal */}
-            <main className="pb-4 space-y-0">
+            <main className="pb-4 space-y-12">
 
                 {/* Sección de Películas */}
                 {(filters.type === 'all' || filters.type === 'movie') && (
