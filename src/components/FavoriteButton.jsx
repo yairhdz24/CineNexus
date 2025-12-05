@@ -3,9 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useFavorites } from '../context/FavoritesContext';
 import { useState, useCallback } from 'react';
 
-/**
- * Botón de favoritos con animación
- */
+
+// Boton de favoritos con animacion
 export default function FavoriteButton({ movie, className = '' }) {
     const { isFavorite, toggleFavorite } = useFavorites();
     const [isAnimating, setIsAnimating] = useState(false);

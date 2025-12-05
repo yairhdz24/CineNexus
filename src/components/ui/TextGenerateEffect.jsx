@@ -2,12 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { cn } from '../../lib/utils';
 
-/**
- * Componente TextGenerateEffect - Muestra texto con efecto de escritura animada
- * @param {string} words - Texto a mostrar
- * @param {string} className - Clases CSS adicionales
- * @param {number} duration - Duración de la animación por carácter (en segundos)
- */
+
 export const TextGenerateEffect = ({ words, className, duration = 0.1 }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);

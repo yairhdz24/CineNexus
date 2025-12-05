@@ -2,10 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { cn } from '../../lib/utils';
 
-/**
- * Componente BackgroundBeams - Crea un efecto de rayos de luz animados en el fondo
- * @param {string} className - Clases CSS adicionales
- */
 export const BackgroundBeams = ({ className }) => {
   const containerRef = useRef(null);
   const [beams, setBeams] = useState([]);

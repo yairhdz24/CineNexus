@@ -1,11 +1,31 @@
-import { Film, Heart, Github, Linkedin, Twitter, Instagram, Mail, Globe } from 'lucide-react';
+import { Heart, Github, Linkedin, Twitter, Instagram, Mail, Globe } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useState, useEffect } from 'react';
+import logoDark from '../../public/CineNexus/2.png';
+import logoLight from '../../public/CineNexus/1.png';
 
 export default function Footer() {
     const { t, language, toggleLanguage } = useLanguage();
     const currentYear = new Date().getFullYear();
+    const [isDark, setIsDark] = useState(false);
+
+    useEffect(() => {
+        const updateTheme = () => {
+            setIsDark(document.documentElement.classList.contains('dark'));
+        };
+
+        updateTheme();
+
+        const observer = new MutationObserver(updateTheme);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class'],
+        });
+
+        return () => observer.disconnect();
+    }, []);
 
     const socialLinks = [
         { icon: Github, href: 'https://github.com', label: 'GitHub', hoverBg: 'hover:bg-slate-700' },
@@ -18,18 +38,24 @@ export default function Footer() {
         <footer className="bg-slate-900 text-white relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-violet-900/20 via-transparent to-pink-900/20 pointer-events-none" />
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-500 to-transparent" />
-            
+
             <div className="container mx-auto px-4 py-16 relative z-10">
                 <div className="grid md:grid-cols-4 gap-10 mb-12">
                     <div className="md:col-span-2">
                         <Link to="/" className="inline-flex items-center gap-3 mb-6">
-                            <motion.div className="p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl shadow-lg" whileHover={{ rotate: 360, scale: 1.1 }} transition={{ duration: 0.5 }}>
-                                <Film size={28} />
+                            <motion.div
+                                whileHover={{ scale: 1.05 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                {isDark ? (
+                                    <img src={logoDark} alt="CineNexus Logo" className="w-48 h-auto" />
+                                ) : (
+                                    <img src={logoLight} alt="CineNexus Logo" className="w-48 h-auto brightness-200" />
+                                )}
                             </motion.div>
-                            <span className="text-3xl font-bold bg-gradient-to-r from-violet-400 to-pink-400 bg-clip-text text-transparent">Cine Nexus</span>
                         </Link>
                         <p className="text-slate-400 max-w-md mb-8 leading-relaxed">{t('footerDescription')}</p>
-                        
+
                         <div className="flex gap-3">
                             {socialLinks.map((social) => (
                                 <motion.a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className={`p-3 bg-slate-800 rounded-xl text-slate-400 hover:text-white transition-all ${social.hoverBg}`} whileHover={{ scale: 1.1, y: -5 }} whileTap={{ scale: 0.95 }}>
@@ -85,11 +111,11 @@ export default function Footer() {
                 <div className="border-t border-slate-800 pt-8">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                         <p className="text-slate-400 text-sm flex items-center gap-2">
-                            © {currentYear} Cine Nexus • {t('madeWith')} 
-                            <Heart size={14} className="text-red-500 fill-red-500 animate-pulse" /> 
-                            {t('by')} <span className="font-semibold text-violet-400">Tu Nombre</span>
+                            © {currentYear} CineNexus • {t('madeWith')}
+                            <Heart size={14} className="text-red-500 fill-red-500 animate-pulse" />
+                            {t('by')} <span className="font-semibold text-violet-400">Yair Hernandez</span>
                         </p>
-                        
+
                         <div className="flex items-center gap-6 text-sm">
                             <a href="#" className="text-slate-500 hover:text-violet-400 transition-colors">{t('privacy')}</a>
                             <a href="#" className="text-slate-500 hover:text-violet-400 transition-colors">{t('terms')}</a>

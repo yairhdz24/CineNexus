@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import TabsResponsive from './components/TabsResponsive';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
@@ -31,7 +30,6 @@ function App() {
                     </div>
                     <Footer />
                 </div>
-                <TabsResponsive />
             </div>
         </Router>
     );

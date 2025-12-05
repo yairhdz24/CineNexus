@@ -2,12 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { cn } from '../../lib/utils';
 
-/**
- * Componente Sparkles - Crea un efecto de partículas brillantes animadas
- * @param {string} id - Identificador único para el componente
- * @param {number} sparklesCount - Número de partículas a mostrar
- * @param {string} className - Clases CSS adicionales
- */
 export const Sparkles = ({ id, sparklesCount = 20, className }) => {
   const [sparkles, setSparkles] = useState([]);
 
