@@ -1,3 +1,4 @@
+// Hook para almacenar valores en localStorage
 import { useState, useEffect } from 'react';
 
 export function useLocalStorage(key, initialValue) {

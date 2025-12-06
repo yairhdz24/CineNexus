@@ -3,7 +3,7 @@ export const formatRating = (rating) => {
 };
 
 export const formatYear = (year) => {
-    return year ? year.replace('–', '') : 'Unknown';
+    return year ? year.replace('-', '') : 'Unknown';
 };
 
 export const formatCurrency = (amount) => {

@@ -6,10 +6,6 @@ import { ThemeProvider } from './context/ThemeContext';
 import { FavoritesProvider } from './context/FavoritesContext';
 import { LanguageProvider } from './context/LanguageContext';
 
-/**
- * Punto de entrada de la aplicación
- * Configura los proveedores de contexto y renderiza la aplicación principal
- */
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>
