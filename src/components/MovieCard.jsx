@@ -77,14 +77,14 @@ export default function MovieCard({ movie, viewMode = 'grid' }) {
                         )}
 
                         {/* Overlay de información (Solo Desktop y GRID) */}
-                        {!isList && (
+                        {/* {!isList && (
                             <div className="hidden md:flex absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 items-end justify-center pb-6">
                                 <div className="flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full border border-white/30">
                                     <Info size={16} className="text-white" />
                                     <span className="text-white text-sm font-bold">Ver Detalles</span>
                                 </div>
                             </div>
-                        )}
+                        )} */}
                     </div>
 
                     {/* SECCION: Información de la película */}

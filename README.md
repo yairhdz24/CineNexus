@@ -175,9 +175,9 @@ npm install
 
 Para ejecutar el proyecto en modo desarrollo:
 
-    ```bash
-    npm run dev
-    ```
+```bash
+npm run dev
+```
 
 El servidor de desarrollo se iniciará en `http://localhost:5173` (o el puerto que Vite asigne automáticamente).
 
@@ -185,9 +185,9 @@ El servidor de desarrollo se iniciará en `http://localhost:5173` (o el puerto q
 
 Para crear una versión optimizada para producción:
 
-    ```bash
-    npm run build
-    ```
+```bash
+npm run build
+```
 
 Los archivos compilados se generarán en la carpeta `dist/`.
 
@@ -282,21 +282,26 @@ En esta sección puedes agregar capturas de pantalla de tu aplicación para most
 1. **Página de Inicio (Home)**
    - Muestra el hero section con el título y los posters destacados
    - Incluye las secciones de "Películas en Tendencia" y "Series Populares"
+   ![inicio](image-1.png)
 
 2. **Página de Búsqueda (Search Results)**
    - Muestra los resultados de búsqueda con los filtros aplicados
    - Incluye la paginación en funcionamiento
+   ![busqueda](image-2.png)
 
 3. **Página de Detalles (Movie Detail)**
    - Muestra la información completa de una película
    - Incluye el poster, sinopsis, reparto, calificaciones, etc.
+   ![detalles](image-3.png)
 
 4. **Página de Favoritos**
    - Muestra la lista de películas favoritas guardadas
+   ![favoritos](image-4.png)
 
 5. **Vista Móvil**
    - Capturas de cómo se ve la aplicación en dispositivos móviles
    - Muestra la barra de navegación inferior
+   ![movil](image-5.png)
 
 ## 📝 Notas Adicionales
 
