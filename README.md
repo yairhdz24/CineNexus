@@ -54,8 +54,8 @@ Antes de comenzar, asegúrate de tener instalado:
 ### 1. Clonar el Repositorio
 
 ```bash
-git clone <url-del-repositorio>
-cd movie-search-app
+git clone https://github.com/yairhdz24/CineNexus.git
+cd CineNexus
 ```
 
 ### 2. Instalar Dependencias
@@ -282,26 +282,31 @@ En esta sección puedes agregar capturas de pantalla de tu aplicación para most
 1. **Página de Inicio (Home)**
    - Muestra el hero section con el título y los posters destacados
    - Incluye las secciones de "Películas en Tendencia" y "Series Populares"
-   ![inicio](image-1.png)
+   
+   ![inicio](./public/image-1.png)
 
 2. **Página de Búsqueda (Search Results)**
    - Muestra los resultados de búsqueda con los filtros aplicados
    - Incluye la paginación en funcionamiento
-   ![busqueda](image-2.png)
+
+   ![busqueda](./public/image-2.png)
 
 3. **Página de Detalles (Movie Detail)**
    - Muestra la información completa de una película
    - Incluye el poster, sinopsis, reparto, calificaciones, etc.
-   ![detalles](image-3.png)
+   
+   ![detalles](./public/image-3.png)
 
 4. **Página de Favoritos**
    - Muestra la lista de películas favoritas guardadas
-   ![favoritos](image-4.png)
+
+   ![favoritos](./public/image-4.png)
 
 5. **Vista Móvil**
    - Capturas de cómo se ve la aplicación en dispositivos móviles
    - Muestra la barra de navegación inferior
-   ![movil](image-5.png)
+
+   ![movil](./public/image-5.png)
 
 ## 📝 Notas Adicionales
 
