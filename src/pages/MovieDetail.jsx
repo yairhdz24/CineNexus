@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { fetchMovieDetails } from '../utils/api';
+import { fetchMovieDetails, fetchMovies } from '../utils/api';
 import FavoriteButton from '../components/FavoriteButton';
-import { Star, Calendar, Clock, Film, Share2, Award, ArrowLeft, User, PenTool, Users, Globe, DollarSign, Play, ExternalLink } from 'lucide-react';
+import CategorySection from '../components/CategorySection';
+import { Star, Calendar, Clock, Film, Share2, Award, ArrowLeft, User, PenTool, Users, Globe, DollarSign, Play, ExternalLink, Sparkles } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function MovieDetail() {
     const { id } = useParams();
     const { t } = useLanguage();
     const [movie, setMovie] = useState(null);
+    const [similarMovies, setSimilarMovies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -26,6 +28,15 @@ export default function MovieDetail() {
                 const data = await fetchMovieDetails(id);
                 if (data && data.Response === 'True') {
                     setMovie(data);
+
+                    // Cargar similares basados en el primer género
+                    const firstGenre = data.Genre?.split(',')[0]?.trim();
+                    if (firstGenre) {
+                        const similarData = await fetchMovies(firstGenre, 1, data.Type || 'movie');
+                        if (similarData.Search) {
+                            setSimilarMovies(similarData.Search.slice(0, 5));
+                        }
+                    }
                 } else {
                     setError(data?.Error || t('movieNotFound'));
                 }
@@ -42,7 +53,7 @@ export default function MovieDetail() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-950">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-violet-500 border-t-transparent mx-auto mb-4" />
+                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-red-500 border-t-transparent mx-auto mb-4" />
                     <p className="text-slate-600 dark:text-slate-400">{t('loading')}</p>
                 </div>
             </div>
@@ -56,7 +67,7 @@ export default function MovieDetail() {
                     <Film size={48} className="mx-auto text-slate-400 mb-4" />
                     <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{t('error')}</h2>
                     <p className="text-slate-500 mb-4">{error || t('movieNotFound')}</p>
-                    <Link to="/" className="text-violet-600 hover:underline flex items-center justify-center gap-2">
+                    <Link to="/" className="text-red-600 hover:underline flex items-center justify-center gap-2">
                         <ArrowLeft size={18} /> {t('goBack')}
                     </Link>
                 </div>
@@ -75,8 +86,8 @@ export default function MovieDetail() {
                     <div className="absolute inset-0 bg-cover bg-center opacity-30 blur-sm" style={{ backgroundImage: `url(${movie.Poster})` }} />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-b from-slate-900/50 to-slate-900" />
-                
-                <div className="relative container mx-auto px-4 pt-20 pb-8">
+
+                <div className="relative container mx-auto px-4 pt-32 pb-8">
                     <Link to="/" className="inline-flex items-center gap-2 text-white/70 hover:text-white mb-6 transition-colors">
                         <ArrowLeft size={20} /> {t('goBack')}
                     </Link>
@@ -121,7 +132,7 @@ export default function MovieDetail() {
                             {movie.Genre && movie.Genre !== 'N/A' && (
                                 <div className="flex flex-wrap gap-2 mb-4">
                                     {movie.Genre.split(', ').map(g => (
-                                        <span key={g} className="px-3 py-1 bg-violet-600/80 rounded-full text-sm">{g}</span>
+                                        <span key={g} className="px-3 py-1 bg-red-600/80 rounded-full text-sm">{g}</span>
                                     ))}
                                 </div>
                             )}
@@ -159,8 +170,8 @@ export default function MovieDetail() {
                             <div className="space-y-4">
                                 {movie.Director && movie.Director !== 'N/A' && (
                                     <div className="flex gap-4">
-                                        <div className="w-10 h-10 bg-violet-100 dark:bg-violet-900/30 rounded-full flex items-center justify-center">
-                                            <User className="text-violet-600 dark:text-violet-400" size={20} />
+                                        <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+                                            <User className="text-red-600 dark:text-red-400" size={20} />
                                         </div>
                                         <div>
                                             <p className="text-sm text-slate-500 dark:text-slate-400">{t('director')}</p>
@@ -170,8 +181,8 @@ export default function MovieDetail() {
                                 )}
                                 {movie.Writer && movie.Writer !== 'N/A' && (
                                     <div className="flex gap-4">
-                                        <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
-                                            <PenTool className="text-purple-600 dark:text-purple-400" size={20} />
+                                        <div className="w-10 h-10 bg-rose-100 dark:bg-rose-900/30 rounded-full flex items-center justify-center">
+                                            <PenTool className="text-rose-600 dark:text-rose-400" size={20} />
                                         </div>
                                         <div>
                                             <p className="text-sm text-slate-500 dark:text-slate-400">{t('writers')}</p>
@@ -196,7 +207,7 @@ export default function MovieDetail() {
                         {/* Trailer */}
                         <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
                             <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">{t('trailer')}</h2>
-                            <a href={youtubeUrl} target="_blank" rel="noopener noreferrer" className="block relative aspect-video max-w-lg bg-slate-900 rounded-lg overflow-hidden group">
+                            <a href={youtubeUrl} target="_blank" rel="noopener noreferrer" className="block relative aspect-video bg-slate-900 rounded-lg overflow-hidden group">
                                 {hasPoster && (
                                     <>
                                         <div className="absolute inset-0 bg-cover bg-center opacity-60 group-hover:opacity-80 transition-opacity" style={{ backgroundImage: `url(${movie.Poster})` }} />
@@ -231,7 +242,7 @@ export default function MovieDetail() {
                                 )}
                                 {movie.Country && movie.Country !== 'N/A' && (
                                     <div className="flex items-center gap-3">
-                                        <Globe className="text-violet-500" size={22} />
+                                        <Globe className="text-red-500" size={22} />
                                         <div>
                                             <p className="text-xs text-slate-500 dark:text-slate-400">{t('country')}</p>
                                             <p className="font-medium text-slate-900 dark:text-white">{movie.Country}</p>
@@ -274,10 +285,9 @@ export default function MovieDetail() {
                                 {movie.Metascore && movie.Metascore !== 'N/A' && (
                                     <div className="flex justify-between items-center pt-2 border-t border-slate-200 dark:border-slate-700">
                                         <span className="text-slate-600 dark:text-slate-400 text-sm">Metascore</span>
-                                        <span className={`px-3 py-1 rounded font-bold text-white ${
-                                            parseInt(movie.Metascore) >= 60 ? 'bg-green-500' :
+                                        <span className={`px-3 py-1 rounded font-bold text-white ${parseInt(movie.Metascore) >= 60 ? 'bg-green-500' :
                                             parseInt(movie.Metascore) >= 40 ? 'bg-yellow-500' : 'bg-red-500'
-                                        }`}>{movie.Metascore}</span>
+                                            }`}>{movie.Metascore}</span>
                                     </div>
                                 )}
                             </div>
@@ -290,6 +300,18 @@ export default function MovieDetail() {
                         </div>
                     </div>
                 </div>
+
+                {/* Similar Titles Section */}
+                {similarMovies.length > 0 && (
+                    <div className="mt-12">
+                        <CategorySection
+                            title={t('similarTitles') || "Títulos Similares"}
+                            movies={similarMovies}
+                            loading={false}
+                            icon={Sparkles}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );

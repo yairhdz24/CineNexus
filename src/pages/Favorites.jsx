@@ -10,25 +10,27 @@ export default function Favorites() {
     const { t } = useLanguage();
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-24">
-            {/* Header */}
-            <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-pink-600 py-16 md:py-20">
+        <div className="min-h-screen pt-28 pb-24 md:pb-8 bg-slate-50 dark:bg-slate-950">
+            {/* Header - Compact */}
+            <div className="bg-gradient-to-br from-red-600 via-rose-600 to-red-700 py-10 md:py-12">
                 <div className="container mx-auto px-4">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-center text-white"
+                        className="flex flex-col md:flex-row items-center gap-4 md:gap-6 text-white"
                     >
-                        <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl mb-4">
-                            <Heart size={32} className="text-white" fill="currentColor" />
+                        <div className="inline-flex items-center justify-center w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl">
+                            <Heart size={28} className="text-white" fill="currentColor" />
                         </div>
-                        <h1 className="text-3xl md:text-4xl font-bold mb-2">{t('yourFavorites')}</h1>
-                        <p className="text-white/80 mb-6">
-                            {favorites.length > 0
-                                ? `${favorites.length} ${favorites.length === 1 ? 'película' : 'películas'}`
-                                : t('noFavorites')
-                            }
-                        </p>
+                        <div className="text-center md:text-left flex-1">
+                            <h1 className="text-2xl md:text-3xl font-bold mb-1">{t('yourFavorites')}</h1>
+                            <p className="text-white/80 text-sm">
+                                {favorites.length > 0
+                                    ? `${favorites.length} ${favorites.length === 1 ? 'película' : 'películas'}`
+                                    : t('noFavorites')
+                                }
+                            </p>
+                        </div>
 
                         {favorites.length > 0 && (
                             <button
@@ -63,7 +65,7 @@ export default function Favorites() {
                         </p>
                         <Link
                             to="/"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-full transition-all"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full transition-all"
                         >
                             {t('exploreCatalog')}
                             <ArrowRight size={18} />

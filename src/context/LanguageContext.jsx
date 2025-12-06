@@ -15,7 +15,7 @@ const translations = {
         popularSeries: 'Series Populares',
         seeAll: 'Ver todo',
         loading: 'Cargando...',
-        
+
         // Movies & Series pages
         discoverMovies: 'Descubre las mejores películas',
         discoverSeries: 'Descubre las mejores series',
@@ -25,7 +25,7 @@ const translations = {
         searchingSeries: 'Buscando series',
         allYears: 'Todos los años',
         results: 'resultados para',
-        
+
         // Movie Detail
         plot: 'Sinopsis',
         synopsisNotAvailable: 'Sinopsis no disponible.',
@@ -38,6 +38,7 @@ const translations = {
         watchOnYouTube: 'Ver en YouTube',
         ratings: 'Calificaciones',
         votes: 'votos',
+        similarTitles: 'Títulos Similares',
         awards: 'Premios',
         information: 'Información',
         releaseDate: 'Estreno',
@@ -48,18 +49,18 @@ const translations = {
         error: 'Error',
         movieNotFound: 'No encontrado',
         errorLoading: 'Error al cargar',
-        
+
         // Favorites
         yourFavorites: 'Tus Favoritos',
         noFavorites: 'No tienes favoritos aún',
         startAdding: '¡Agrega películas a tu colección!',
         exploreCatalog: 'Explorar catálogo',
-        
+
         // Actions
         viewDetails: 'Ver detalles',
         share: 'Compartir',
         clearSearch: 'Limpiar',
-        
+
         // Search Results
         resultsFor: 'Resultados para',
         noResults: 'Sin resultados',
@@ -67,7 +68,7 @@ const translations = {
         allTypes: 'Todos',
         movie: 'Película',
         episode: 'Episodio',
-        
+
         // Footer
         footerDescription: 'Tu destino para descubrir películas y series.',
         explore: 'Explorar',
@@ -75,10 +76,36 @@ const translations = {
         contact: 'Contacto',
         privacy: 'Privacidad',
         terms: 'Términos',
-        madeWith: 'Hecho con',
         by: 'por',
         dataProvidedBy: 'Datos de',
-        
+
+        // Filters & Sort
+        allGenres: 'Todos los Géneros',
+        sortBy: 'Ordenar por',
+        mostPopular: 'Más Populares',
+        topRated: 'Mejor Valorados',
+        newest: 'Más Recientes',
+        oldest: 'Más Antiguos',
+
+        // Genres
+        action: 'Acción',
+        adventure: 'Aventura',
+        comedy: 'Comedia',
+        drama: 'Drama',
+        scifi: 'Ciencia Ficción',
+        horror: 'Terror',
+        romance: 'Romance',
+        thriller: 'Thriller',
+        animation: 'Animación',
+        fantasy: 'Fantasía',
+        crime: 'Crimen',
+        documentary: 'Documental',
+
+        // Footer
+        emailUs: 'Escríbenos',
+        allRightsReserved: 'Todos los derechos reservados.',
+        madeWith: 'Hecho con',
+
         // 404
         pageNotFound: 'Página no encontrada',
         pageNotFoundDesc: 'La página que buscas no existe.',
@@ -96,7 +123,7 @@ const translations = {
         popularSeries: 'Popular Series',
         seeAll: 'See all',
         loading: 'Loading...',
-        
+
         // Movies & Series pages
         discoverMovies: 'Discover the best movies',
         discoverSeries: 'Discover the best series',
@@ -106,7 +133,7 @@ const translations = {
         searchingSeries: 'Searching series',
         allYears: 'All years',
         results: 'results for',
-        
+
         // Movie Detail
         plot: 'Synopsis',
         synopsisNotAvailable: 'Synopsis not available.',
@@ -119,6 +146,7 @@ const translations = {
         watchOnYouTube: 'Watch on YouTube',
         ratings: 'Ratings',
         votes: 'votes',
+        similarTitles: 'Similar Titles',
         awards: 'Awards',
         information: 'Information',
         releaseDate: 'Release',
@@ -129,18 +157,18 @@ const translations = {
         error: 'Error',
         movieNotFound: 'Not found',
         errorLoading: 'Error loading',
-        
+
         // Favorites
         yourFavorites: 'Your Favorites',
         noFavorites: 'No favorites yet',
         startAdding: 'Add movies to your collection!',
         exploreCatalog: 'Explore catalog',
-        
+
         // Actions
         viewDetails: 'View details',
         share: 'Share',
         clearSearch: 'Clear',
-        
+
         // Search Results
         resultsFor: 'Results for',
         noResults: 'No results',
@@ -148,7 +176,29 @@ const translations = {
         allTypes: 'All',
         movie: 'Movie',
         episode: 'Episode',
-        
+
+        // Filters & Sort
+        allGenres: 'All Genres',
+        sortBy: 'Sort by',
+        mostPopular: 'Most Popular',
+        topRated: 'Top Rated',
+        newest: 'Newest',
+        oldest: 'Oldest',
+
+        // Genres
+        action: 'Action',
+        adventure: 'Adventure',
+        comedy: 'Comedy',
+        drama: 'Drama',
+        scifi: 'Sci-Fi',
+        horror: 'Horror',
+        romance: 'Romance',
+        thriller: 'Thriller',
+        animation: 'Animation',
+        fantasy: 'Fantasy',
+        crime: 'Crime',
+        documentary: 'Documentary',
+
         // Footer
         footerDescription: 'Your destination to discover movies and series.',
         explore: 'Explore',
@@ -156,10 +206,12 @@ const translations = {
         contact: 'Contact',
         privacy: 'Privacy',
         terms: 'Terms',
+        emailUs: 'Email us',
+        allRightsReserved: 'All rights reserved.',
         madeWith: 'Made with',
         by: 'by',
         dataProvidedBy: 'Data from',
-        
+
         // 404
         pageNotFound: 'Page not found',
         pageNotFoundDesc: 'The page you are looking for does not exist.',

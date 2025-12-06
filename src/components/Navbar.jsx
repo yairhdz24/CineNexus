@@ -42,16 +42,16 @@ export default function Navbar() {
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm backdrop-blur-xl">
             {/* Gradient Line Top */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-violet-600 via-pink-600 to-cyan-600" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-600 via-rose-600 to-orange-500" />
 
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between h-24 gap-4">
                     {/* Logo */}
                     <Link to="/" className="flex-shrink-0 flex items-center gap-2.5 transform hover:scale-105 transition-transform">
                         {isDark ? (
-                            <img src={logoDark} alt="CineNexus Logo" className="w-auto h-20" />
+                            <img src={logoDark} alt="CineNexus Logo" className="w-auto h-36" />
                         ) : (
-                            <img src={logoLight} alt="CineNexus Logo" className="w-auto h-20" />
+                            <img src={logoLight} alt="CineNexus Logo" className="w-auto h-36" />
                         )}
                     </Link>
 
@@ -70,8 +70,8 @@ export default function Navbar() {
                                     to={link.to}
                                     end={link.to === '/'}
                                     className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all ${isActive
-                                        ? 'text-white bg-gradient-to-r from-violet-600 to-pink-600 shadow-lg'
-                                        : 'text-slate-600 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-white dark:hover:bg-slate-700'
+                                        ? 'text-white bg-gradient-to-r from-red-600 to-rose-600 shadow-lg'
+                                        : 'text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-white dark:hover:bg-slate-700'
                                         }`}
                                 >
                                     <link.icon size={16} />
@@ -84,7 +84,7 @@ export default function Navbar() {
                         <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-700">
                             <motion.button
                                 onClick={toggleLanguage}
-                                className="flex items-center justify-center w-10 h-10 text-slate-600 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 transition-colors rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
+                                className="flex items-center justify-center w-10 h-10 text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
                                 whileHover={{ scale: 1.1, rotate: 180 }}
                                 whileTap={{ scale: 0.9 }}
                             >

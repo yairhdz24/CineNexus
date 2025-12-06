@@ -2,7 +2,7 @@ import MovieCard from './MovieCard';
 import MovieCardSkeleton from './MovieCardSkeleton';
 import { motion } from 'motion/react';
 
-export default function MovieList({ movies, loading }) {
+export default function MovieList({ movies, loading, viewMode = 'grid' }) {
     if (loading) {
         return (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
@@ -28,7 +28,11 @@ export default function MovieList({ movies, loading }) {
     }
 
     return (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+        <div className={
+            viewMode === 'grid'
+                ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6"
+                : "flex flex-col gap-4 max-w-4xl mx-auto"
+        }>
             {movies.map((movie, index) => (
                 <motion.div
                     key={movie.imdbID}
@@ -36,7 +40,7 @@ export default function MovieList({ movies, loading }) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.05 }}
                 >
-                    <MovieCard movie={movie} />
+                    <MovieCard movie={movie} viewMode={viewMode} />
                 </motion.div>
             ))}
         </div>

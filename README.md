@@ -53,18 +53,18 @@ Antes de comenzar, asegúrate de tener instalado:
 
 ### 1. Clonar el Repositorio
 
-    ```bash
+```bash
 git clone <url-del-repositorio>
-    cd movie-search-app
-    ```
+cd movie-search-app
+```
 
 ### 2. Instalar Dependencias
 
-    ```bash
-    npm install
-    ```
+```bash
+npm install
+```
 
-O si prefieres usar yarn:
+### O si prefieres usar yarn:
 
 ```bash
 yarn install
@@ -98,7 +98,7 @@ En la raíz del proyecto, crea un archivo llamado `.env`:
 touch .env
 ```
 
-O en Windows:
+### O en Windows:
 
 ```bash
 type nul > .env
@@ -108,27 +108,17 @@ type nul > .env
 
 Abre el archivo `.env` y agrega la siguiente configuración:
 
-```env
+```bash
+.env
 VITE_OMDB_API_KEY=tu_clave_de_api_aqui
-VITE_YOUTUBE_API_KEY=tu_clave_de_youtube_api_aqui
 ```
 
 **Ejemplo:**
 
-    ```env
+```bash
+.env
 VITE_OMDB_API_KEY=abc12345
-VITE_YOUTUBE_API_KEY=xyz78901
 ```
-
-**Nota sobre YouTube API Key:**
-- La clave de YouTube es **opcional** pero recomendada para reproducir tráilers directamente en la página
-- Si no proporcionas una clave de YouTube, la aplicación mostrará un botón para buscar el tráiler en YouTube
-- Para obtener una clave de YouTube:
-  1. Visita [Google Cloud Console](https://console.cloud.google.com/)
-  2. Crea un nuevo proyecto o selecciona uno existente
-  3. Habilita la API de YouTube Data API v3
-  4. Crea credenciales (API Key)
-  5. Copia la clave y agrégala a tu archivo `.env`
 
 ### Importante sobre Variables de Entorno en Vite
 
@@ -307,61 +297,6 @@ En esta sección puedes agregar capturas de pantalla de tu aplicación para most
 5. **Vista Móvil**
    - Capturas de cómo se ve la aplicación en dispositivos móviles
    - Muestra la barra de navegación inferior
-
-### Ejemplo de Cómo Agregar Imágenes
-
-```markdown
-## Capturas de Pantalla
-
-### Página de Inicio
-![Página de Inicio](./screenshots/home.png)
-
-### Página de Búsqueda
-![Página de Búsqueda](./screenshots/search.png)
-
-### Página de Detalles
-![Página de Detalles](./screenshots/detail.png)
-```
-
-### Crear Carpeta de Screenshots
-
-1. Crea una carpeta `screenshots` en la raíz del proyecto
-2. Agrega tus capturas de pantalla allí
-3. Actualiza esta sección del README con las rutas correctas
-
-## 🎨 Personalización
-
-### Colores y Tema
-
-Los colores principales se configuran en `tailwind.config.js`. Puedes personalizar:
-
-- Colores primarios
-- Modo oscuro/claro
-- Animaciones
-- Espaciados
-
-### Componentes
-
-Todos los componentes están en `src/components/` y pueden ser modificados según tus necesidades.
-
-## 🐛 Solución de Problemas
-
-### Error: "VITE_OMDB_API_KEY is not defined"
-
-- Verifica que el archivo `.env` existe en la raíz del proyecto
-- Asegúrate de que la variable comience con `VITE_`
-- Reinicia el servidor de desarrollo después de crear/modificar `.env`
-
-### Error: "Failed to fetch"
-
-- Verifica tu conexión a internet
-- Confirma que tu clave de API es válida
-- Revisa los límites de tu plan de OMDb API
-
-### La aplicación no se ve bien
-
-- Limpia la caché del navegador
-- Ejecuta `npm run build` y luego `npm run preview` para verificar la versión de producción
 
 ## 📝 Notas Adicionales
 
