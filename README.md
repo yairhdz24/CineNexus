@@ -282,7 +282,7 @@ En esta sección puedes agregar capturas de pantalla de tu aplicación para most
 1. **Página de Inicio (Home)**
    - Muestra el hero section con el título y los posters destacados
    - Incluye las secciones de "Películas en Tendencia" y "Series Populares"
-   
+
    ![inicio](./public/image-1.png)
 
 2. **Página de Búsqueda (Search Results)**
@@ -306,7 +306,7 @@ En esta sección puedes agregar capturas de pantalla de tu aplicación para most
    - Capturas de cómo se ve la aplicación en dispositivos móviles
    - Muestra la barra de navegación inferior
 
-   ![movil](./public/image-5.png)
+   ![movil](./public/image.png)
 
 ## 📝 Notas Adicionales
 

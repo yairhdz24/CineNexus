@@ -65,7 +65,7 @@ export default function Movies() {
     return (
         <div className="min-h-screen pt-28 pb-24 md:pb-8 bg-slate-50 dark:bg-slate-950">
             {/* Header Premium - Red/Wine theme con cinta de película */}
-            <div className="relative bg-gradient-to-br from-red-600 via-rose-600 to-red-800 py-16 overflow-hidden">
+            <div className="relative bg-gradient-to-br from-red-600 via-rose-600 to-red-800 py-16 md:py-20 overflow-hidden">
                 {/* Decorative elements */}
                 <div className="absolute inset-0 opacity-20">
                     <div className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full blur-3xl" />
